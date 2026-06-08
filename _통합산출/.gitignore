@@ -1,0 +1,9 @@
+# 임시/재생성 가능 산출물
+_render/
+__pycache__/
+*.png
+*.pyc
+
+# OS
+Thumbs.db
+.DS_Store
