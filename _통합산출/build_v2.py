@@ -20,6 +20,32 @@ data=json.dumps(rows,ensure_ascii=False)
 done_files=sorted(set(r["원본파일명"] for r in rows if r["원본파일명"]))
 file_links=json.dumps(_paths,ensure_ascii=False)
 
+# ===== 미완·확인필요 이슈 (자동 탐지 + 수기 병합) =====
+from collections import defaultdict as _dd
+ALL_REG=['서울','부산','대구','인천','광주','대전','울산','경기','강원','충북','충남','전북','전남','경북','경남','제주','세종']
+USER_PREP={'강원','충북','충남','전북','전남','경북'}  # 사용자가 엑셀로 준비중
+_done=set((r['지역'],r['시험종류']) for r in rows)
+issues=[]
+for _reg in ALL_REG:
+    if _reg in USER_PREP: continue
+    for _jt in ['공무원','교행']:
+        if (_reg,_jt) not in _done:
+            issues.append({'구분':'미입력','지역':_reg,'항목':_jt+' 합격선','상태':'❌ 미처리','메모':'원본 폴더에 파일 있음 · 합격선 아직 입력 안 함'})
+_agg=_dd(lambda:[0,0,0])
+for r in rows:
+    a=_agg[(r['지역'],r['시험종류'])]; a[0]+=1
+    if r['경쟁률(접수/선발)'].strip(): a[1]+=1
+    if r['경쟁률(응시/선발)'].strip(): a[2]+=1
+for (_reg,_jt),a in sorted(_agg.items()):
+    if a[1]<a[0]: issues.append({'구분':'접수 미보강','지역':_reg,'항목':_jt+' 경쟁률(접수)','상태':f'△ {a[1]}/{a[0]}','메모':'접수 일부 미반영 또는 원본 부재'})
+    if a[2]<a[0]: issues.append({'구분':'응시 미보강','지역':_reg,'항목':_jt+' 경쟁률(응시)','상태':f'△ {a[2]}/{a[0]}','메모':'응시 일부 미반영 또는 원본 부재'})
+_man=os.path.join(D,'이슈_수기.csv')
+if os.path.exists(_man):
+    with open(_man,encoding='utf-8-sig') as fp:
+        for r in csv.DictReader(fp):
+            issues.append({'구분':r['구분'],'지역':r['지역'],'항목':r['항목'],'상태':r['상태'],'메모':r.get('사유/메모','')})
+issues_json=json.dumps(issues,ensure_ascii=False)
+
 HTML=r"""<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>합격선 관리 v2 (검증본)</title>
 <style>
@@ -48,18 +74,32 @@ tbody tr:hover{background:#f8fbff}.r{text-align:right}
 .cut{font-weight:700;color:var(--cut);text-align:right}
 .empty{padding:50px;text-align:center;color:var(--mut)}
 .done{color:var(--ok);font-weight:600}
+.tabs{display:flex;gap:4px;padding:0 22px;background:#fff;border-bottom:1px solid var(--line)}
+.tab{padding:10px 16px;border:none;background:none;font-size:13px;font-weight:600;color:var(--mut);cursor:pointer;border-bottom:2px solid transparent}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tab .badge{background:#fee2e2;color:#b91c1c;border-radius:9px;padding:0 6px;font-size:11px;margin-left:5px}
+.igrp{margin:14px 0 4px;font-weight:700;font-size:13px;color:var(--txt)}
+.itbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.itbl th,.itbl td{padding:8px 11px;border-bottom:1px solid #f1f3f5;text-align:left;font-size:13px}
+.itbl th{background:#f8fafc;font-size:12px;color:var(--mut)}
+.st-미입력,.st-x{color:#b91c1c;font-weight:600}
 </style></head><body>
 <header><h1>✅ 합격선 관리 v2 — 검증본</h1>
 <div class="sub" id="meta"></div>
 <div class="bar"><i id="prog"></i></div>
 </header>
-<div class="wrap">
+<div class="tabs">
+<button class="tab on" data-t="data" onclick="tab('data')">📋 검증 데이터</button>
+<button class="tab" data-t="issue" onclick="tab('issue')">⚠️ 미완·확인필요 <span class="badge" id="ibadge"></span></button>
+</div>
+<div class="wrap" id="tab-data">
 <div class="cards" id="cards"></div>
 <div class="filters" id="filters"></div>
 <div id="tbl"></div>
 </div>
+<div class="wrap" id="tab-issue" style="display:none"><div id="issues"></div></div>
 <script>
-const DB=__DATA__, DONE=__DONE__, TOTAL=__TOTAL__, LINKS=__LINKS__;
+const DB=__DATA__, DONE=__DONE__, TOTAL=__TOTAL__, LINKS=__LINKS__, ISSUES=__ISSUES__;
 const $=s=>document.querySelector(s),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
 const uniq=(a,k)=>[...new Set(a.map(r=>r[k]).filter(Boolean))].sort((x,y)=>String(x).localeCompare(y,'ko'));
 const COLS=[['지역'],['시험종류','t'],['연도'],['회차'],['시험구분'],['임용예정기관'],['직군'],['직렬'],['직류'],['직급'],['대상'],
@@ -93,8 +133,28 @@ function draw(){
    return `<td class="${c=='r'?'r':''}" title="${String(v).replace(/"/g,'')}">${v}</td>`}).join('')+'</tr>').join('');
  h+='</tbody></table></div>';$('#tbl').innerHTML=h;
 }
+function tab(t){
+ $('#tab-data').style.display=t=='data'?'':'none';
+ $('#tab-issue').style.display=t=='issue'?'':'none';
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t==t));
+}
+function renderIssues(){
+ $('#ibadge').textContent=ISSUES.length;
+ const ORD=['미입력','확인필요','원본없음','접수 미보강','응시 미보강','잔여 보강','사용자 준비중'];
+ const grp={};ISSUES.forEach(i=>{(grp[i['구분']]=grp[i['구분']]||[]).push(i)});
+ const keys=Object.keys(grp).sort((a,b)=>(ORD.indexOf(a)+99*(ORD.indexOf(a)<0))-(ORD.indexOf(b)+99*(ORD.indexOf(b)<0)));
+ let h='<p class="sub" style="margin:6px 0 10px">처리하면서 막히거나 미뤄둔 항목입니다. 데이터가 채워지면 자동으로 사라집니다.</p>';
+ keys.forEach(k=>{const a=grp[k];
+  h+=`<div class="igrp">${k} <span style="color:var(--mut);font-weight:400">(${a.length})</span></div>`;
+  h+='<table class="itbl"><thead><tr><th style="width:70px">지역</th><th style="width:120px">상태</th><th style="width:200px">항목</th><th>사유/메모</th></tr></thead><tbody>';
+  h+=a.map(i=>`<tr><td><b>${i['지역']}</b></td><td>${i['상태']}</td><td>${i['항목']}</td><td style="color:var(--mut)">${i['메모']||''}</td></tr>`).join('');
+  h+='</tbody></table>';
+ });
+ $('#issues').innerHTML=h;
+}
+renderIssues();
 draw();
 </script></body></html>"""
-html=HTML.replace("__DATA__",data).replace("__DONE__",json.dumps(done_files,ensure_ascii=False)).replace("__TOTAL__",str(TOTAL_FILES)).replace("__LINKS__",file_links)
+html=HTML.replace("__DATA__",data).replace("__DONE__",json.dumps(done_files,ensure_ascii=False)).replace("__TOTAL__",str(TOTAL_FILES)).replace("__LINKS__",file_links).replace("__ISSUES__",issues_json)
 with open(OUT,"w",encoding="utf-8") as fp: fp.write(html)
 print(f"v2 생성: {OUT} | 검증행 {len(rows)} | 확인파일 {len(done_files)}")
