@@ -16,7 +16,14 @@ for _f in _glob.glob(BASE+"/**/*",recursive=True):
         _paths[os.path.basename(_f)]="file:///"+_f.replace("\\","/").replace(" ","%20")
 with open(SRC,encoding="utf-8-sig") as fp:
     rows=list(csv.DictReader(fp))
-data=json.dumps(rows,ensure_ascii=False)
+# JSON 키 압축 (23컬럼명 → 단자 키)
+KCOLS=['지역','시험종류','연도','회차','시험구분','임용예정기관','직군','직렬','직류','직급','대상',
+       '선발예정인원','접수인원','경쟁률(접수/선발)','응시인원','응시율(%)','경쟁률(응시/선발)',
+       '필기합격인원','합격선','합격선기준','양성평등합격선','원본파일명','비고']
+KMAP={c:str(i) for i,c in enumerate(KCOLS)}  # '지역'->'0', '시험종류'->'1' …
+compact_rows=[[r.get(c,'') for c in KCOLS] for r in rows]
+data=json.dumps(compact_rows,ensure_ascii=False,separators=(',',':'))
+kmap_js=json.dumps(KMAP,ensure_ascii=False)
 done_files=sorted(set(r["원본파일명"] for r in rows if r["원본파일명"]))
 file_links=json.dumps(_paths,ensure_ascii=False)
 
@@ -114,9 +121,17 @@ tbody tr:hover{background:#f8fbff}.r{text-align:right}
 </div>
 <div class="wrap" id="tab-issue" style="display:none"><div id="issues"></div></div>
 <script>
-const DB=__DATA__, DONE=__DONE__, TOTAL=__TOTAL__, LINKS=__LINKS__, ISSUES=__ISSUES__;
-const $=s=>document.querySelector(s),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+// ── 데이터: compact 배열 → 객체 복원 ──────────────────────────────
+const KMAP=__KMAP__;
+const KI=Object.fromEntries(Object.entries(KMAP).map(([k,v])=>[v,k])); // '0'->'지역'
+const RAW=__DATA__;
+const DB=RAW.map(a=>{const o={};a.forEach((v,i)=>{if(KI[i])o[KI[i]]=v});return o});
+const DONE=__DONE__,TOTAL=__TOTAL__,LINKS=__LINKS__,ISSUES=__ISSUES__;
+
+const $=s=>document.querySelector(s);
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
 const uniq=(a,k)=>[...new Set(a.map(r=>r[k]).filter(Boolean))].sort((x,y)=>String(x).localeCompare(y,'ko'));
+
 const COLS=[['지역'],['시험종류','t'],['연도'],['회차'],['시험구분'],['임용예정기관'],['직군'],['직렬'],['직류'],['직급'],['대상'],
  ['선발예정인원','선발','r'],['접수인원','접수','r'],['경쟁률(접수/선발)','경쟁률↓','r'],
  ['응시인원','응시','r'],['응시율(%)','응시율','r'],['경쟁률(응시/선발)','응시경쟁률','r'],
@@ -125,29 +140,92 @@ const COLS=[['지역'],['시험종류','t'],['연도'],['회차'],['시험구분
 const W={'지역':54,'시험종류':62,'연도':52,'회차':48,'시험구분':76,'임용예정기관':110,'직군':82,'직렬':82,'직류':100,'직급':52,'대상':78,
  '선발예정인원':50,'접수인원':58,'경쟁률(접수/선발)':78,'응시인원':56,'응시율(%)':60,'경쟁률(응시/선발)':80,
  '필기합격인원':60,'합격선':68,'합격선기준':72,'양성평등합격선':58,'원본파일명':240,'비고':120};
+
+// ── KPI / 헤더 ────────────────────────────────────────────────────
 $('#meta').innerHTML=`확인 완료 <b class="done">${DONE.length}</b> / 약 ${TOTAL} 파일 · 검증 행 <b>${DB.length.toLocaleString()}</b>`;
 $('#prog').style.width=Math.min(100,DONE.length/TOTAL*100)+'%';
 const regs=uniq(DB,'지역');
-[['확인 파일',DONE.length],['검증 행',DB.length],['지역',regs.length],['공무원',DB.filter(r=>r['시험종류']=='공무원').length],['교행',DB.filter(r=>r['시험종류']=='교행').length]].forEach(([l,n])=>$('#cards').appendChild(el('div','kpi',`<div class="n">${n}</div><div class="l">${l}</div>`)));
+[['확인 파일',DONE.length],['검증 행',DB.length],['지역',regs.length],
+ ['공무원',DB.filter(r=>r['시험종류']=='공무원').length],
+ ['교행',DB.filter(r=>r['시험종류']=='교행').length]
+].forEach(([l,n])=>$('#cards').appendChild(el('div','kpi',`<div class="n">${n.toLocaleString()}</div><div class="l">${l}</div>`)));
+
+// ── 필터 ─────────────────────────────────────────────────────────
 const F=['지역','시험종류','연도','임용예정기관','직급','직렬','직류','대상'];
-F.forEach(k=>{const w=el('div','fl');w.innerHTML=`<label>${k}</label>`;const s=el('select');s.id='f-'+k;s.innerHTML='<option value="">전체</option>'+uniq(DB,k).map(x=>`<option ${k=='직급'&&x=='9급'?'selected':''}>${x}</option>`).join('');s.onchange=draw;w.appendChild(s);$('#filters').appendChild(w)});
-const qw=el('div','fl');qw.innerHTML='<label>검색</label>';const q=el('input');q.id='f-q';q.placeholder='직류·파일명…';q.oninput=draw;qw.appendChild(q);$('#filters').appendChild(qw);
-const cnt=el('span','count');cnt.id='cnt';$('#filters').appendChild(cnt);
+F.forEach(k=>{
+ const w=el('div','fl'); w.innerHTML=`<label>${k}</label>`;
+ const s=el('select'); s.id='f-'+k;
+ s.innerHTML='<option value="">전체</option>'+uniq(DB,k).map(x=>`<option ${k=='직급'&&x=='9급'?'selected':''}>${x}</option>`).join('');
+ s.onchange=debounceDraw; w.appendChild(s); $('#filters').appendChild(w);
+});
+const qw=el('div','fl'); qw.innerHTML='<label>검색</label>';
+const q=el('input'); q.id='f-q'; q.placeholder='직류·파일명…'; q.oninput=debounceDraw;
+qw.appendChild(q); $('#filters').appendChild(qw);
+const cnt=el('span','count'); cnt.id='cnt'; $('#filters').appendChild(cnt);
+
+// ── 가상 스크롤 ───────────────────────────────────────────────────
+const ROW_H=32, OVERSCAN=5, VISIBLE=Math.ceil(window.innerHeight/ROW_H)+OVERSCAN*2;
+let _filtered=[], _scrollTop=0, _tblWrap=null;
+const TW=COLS.reduce((a,[k])=>a+(W[k]||80),0);
+
+function buildShell(){
+ const wrap=document.createElement('div');
+ wrap.className='tblwrap'; wrap.id='vs-wrap';
+ wrap.style.cssText='position:relative;overflow:auto;max-height:74vh';
+ const table=document.createElement('table');
+ table.style.cssText=`min-width:${TW}px;table-layout:fixed;border-collapse:collapse;width:100%`;
+ // colgroup + thead
+ let cg='<colgroup>'+COLS.map(([k])=>`<col style="width:${W[k]||80}px">`).join('')+'</colgroup>';
+ cg+='<thead><tr>'+COLS.map(([k,t])=>`<th>${t||k}</th>`).join('')+'</tr></thead>';
+ table.innerHTML=cg;
+ const tbody=document.createElement('tbody'); tbody.id='vs-body';
+ table.appendChild(tbody); wrap.appendChild(table);
+ _tblWrap=wrap;
+ wrap.addEventListener('scroll',()=>{_scrollTop=wrap.scrollTop; renderVisible();},{passive:true});
+ return wrap;
+}
+
+function rowHtml(r){
+ return '<tr>'+COLS.map(([k,t,c])=>{
+  const v=r[k]==null?'':r[k];
+  if(c=='t') return `<td><span class="tag t-${v}">${v}</span></td>`;
+  if(c=='cut') return `<td class="cut" title="${v}">${v}</td>`;
+  if(k=='원본파일명'){const href=LINKS[v];return href?`<td><a href="${href}" target="_blank" title="${v}" style="color:var(--acc);text-decoration:none">${v.length>24?v.slice(0,24)+'…':v}</a></td>`:`<td title="${v}">${v.length>24?v.slice(0,24)+'…':v}</td>`}
+  return `<td class="${c=='r'?'r':''}" title="${String(v).replace(/"/g,'')}">${v}</td>`;
+ }).join('')+'</tr>';
+}
+
+function renderVisible(){
+ if(!_tblWrap) return;
+ const total=_filtered.length, totalH=total*ROW_H;
+ const start=Math.max(0,Math.floor(_scrollTop/ROW_H)-OVERSCAN);
+ const end=Math.min(total,start+VISIBLE);
+ const body=$('#vs-body');
+ body.style.cssText=`display:block`;  // allow padding trick
+ // padding top/bottom to simulate full height
+ const padTop=start*ROW_H, padBot=(total-end)*ROW_H;
+ let h=`<tr style="height:${padTop}px;display:${padTop?'table-row':'none'}"><td colspan="${COLS.length}"></td></tr>`;
+ for(let i=start;i<end;i++) h+=rowHtml(_filtered[i]);
+ h+=`<tr style="height:${padBot}px;display:${padBot?'table-row':'none'}"><td colspan="${COLS.length}"></td></tr>`;
+ body.innerHTML=h;
+}
+
+let _drawTimer=null;
+function debounceDraw(){clearTimeout(_drawTimer);_drawTimer=setTimeout(draw,80);}
+
 function draw(){
  let rows=DB.slice();
- F.forEach(k=>{const v=$('#f-'+k).value;if(v)rows=rows.filter(r=>r[k]==v)});
- const s=$('#f-q').value.trim();if(s)rows=rows.filter(r=>Object.values(r).some(v=>String(v).includes(s)));
+ F.forEach(k=>{const v=$('#f-'+k).value; if(v) rows=rows.filter(r=>r[k]==v);});
+ const s=$('#f-q').value.trim();
+ if(s) rows=rows.filter(r=>Object.values(r).some(v=>String(v).includes(s)));
  $('#cnt').textContent=rows.length.toLocaleString()+'행';
- if(!DB.length){$('#tbl').innerHTML='<div class="empty">아직 확인된 파일이 없습니다.<br>파일을 하나씩 확인하면 여기에 쌓입니다.</div>';return}
- const tw=COLS.reduce((a,[k])=>a+(W[k]||80),0);
- let h=`<div class="tblwrap"><table style="min-width:${tw}px"><colgroup>`+COLS.map(([k])=>`<col style="width:${W[k]||80}px">`).join('')+'</colgroup><thead><tr>'+COLS.map(([k,t])=>`<th>${t||k}</th>`).join('')+'</tr></thead><tbody>';
- h+=rows.map(r=>'<tr>'+COLS.map(([k,t,c])=>{let v=r[k]==null?'':r[k];
-   if(c=='t')return `<td><span class="tag t-${v}">${v}</span></td>`;
-   if(c=='cut')return `<td class="cut" title="${v}">${v}</td>`;
-   if(k=='원본파일명'){const href=LINKS[v];return href?`<td><a href="${href}" target="_blank" title="${v}" style="color:var(--acc);text-decoration:none">${v.length>24?v.slice(0,24)+'…':v}</a></td>`:`<td title="${v}">${v.length>24?v.slice(0,24)+'…':v}</td>`}
-   return `<td class="${c=='r'?'r':''}" title="${String(v).replace(/"/g,'')}">${v}</td>`}).join('')+'</tr>').join('');
- h+='</tbody></table></div>';$('#tbl').innerHTML=h;
+ _filtered=rows; _scrollTop=0;
+ const tblDiv=$('#tbl');
+ if(!_tblWrap){tblDiv.innerHTML=''; tblDiv.appendChild(buildShell());}
+ if(_tblWrap) _tblWrap.scrollTop=0;
+ renderVisible();
 }
+
 function tab(t){
  $('#tab-data').style.display=t=='data'?'':'none';
  $('#tab-issue').style.display=t=='issue'?'':'none';
@@ -182,6 +260,6 @@ function renderIssues(){
 renderIssues();
 draw();
 </script></body></html>"""
-html=HTML.replace("__DATA__",data).replace("__DONE__",json.dumps(done_files,ensure_ascii=False)).replace("__TOTAL__",str(TOTAL_FILES)).replace("__LINKS__",file_links).replace("__ISSUES__",issues_json)
+html=HTML.replace("__KMAP__",kmap_js).replace("__DATA__",data).replace("__DONE__",json.dumps(done_files,ensure_ascii=False)).replace("__TOTAL__",str(TOTAL_FILES)).replace("__LINKS__",file_links).replace("__ISSUES__",issues_json)
 with open(OUT,"w",encoding="utf-8") as fp: fp.write(html)
 print(f"v2 생성: {OUT} | 검증행 {len(rows)} | 확인파일 {len(done_files)}")
