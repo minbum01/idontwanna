@@ -34,9 +34,8 @@ for _reg in ALL_REG:
 def _misun(r):  # 미선발/비공개 → 접수·응시 0 이 정상(이슈 아님)
     return ('미선발' in r['비고']) or ('비공개' in r['비고']) or (not r['합격선'].strip() and r['필기합격인원'].strip() in ('','0'))
 _REASON={
- ('광주','공무원'): '【원본 일부 부재】 제2회 경력경쟁(의료기술: 방사선·임상병리·물리치료)과 기술계고졸(공업 일반전기) 전형의 출원(접수)인원만 비어있음. 합격선·응시·경쟁률(응시/선발)은 보유. 가진 응시현황이 제1회 공채분뿐이라 제2회 경채·고졸 출원자료가 없음. → 필요: 광주광역시 제2회(경력경쟁/고졸) 출원현황 자료.',
- ('제주','공무원'): '【원본 부재】 2025년 원서접수현황 파일이 폴더에 없음(2026년분만 존재). 그래서 2025 전 직렬의 접수(출원)인원·경쟁률(접수/선발)만 비어있음. 2025 합격선·선발·응시·응시율·경쟁률(응시/선발)은 완비, 2023·2024는 접수까지 완비. → 필요: 제주 2025(제3·4회) 원서접수현황 자료.',
- ('부산','공무원'): '【매칭 누락·소수】 2025 행정(일반행정) 1건만 접수 비어있음. 응시현황 자료 주시거나 수기 보완으로 해결 가능.',
+ ('광주','공무원'): '【원본 일부 부재 — 제2회 경채·고졸분】 광주 공무원은 제1회(공개경쟁)와 제2회(경력경쟁·고졸 등)로 나뉘는데, 우리가 가진 응시(출원)현황은 제1회 공채분뿐입니다. 아래 7행은 모두 제2회에서 뽑는 전형이라 출원(접수)인원 자료가 없습니다.\\n▸ 의료기술 경력경쟁 4행: 2024년 방사선·임상병리, 2025년 임상병리·물리치료\\n▸ 공업(일반전기) 기술계고졸 3행: 2023·2024·2025년\\n이 7행은 합격선·필기합격인원·응시인원은 모두 채워져 있고 출원(접수)인원만 비어, 경쟁률(접수/선발)과 응시율만 산출하지 못합니다.\\n→ 필요한 자료: 광주광역시 제2회 임용시험 원서접수(출원)현황(2023~2025).',
+ ('부산','공무원'): '【소수 1건 — 확인 필요】 2025년 행정(일반행정) 일반 1행만 접수(출원)인원이 비어있습니다. 부산 공무원의 나머지 모든 행은 접수·응시·경쟁률 완비. 이 1행 때문에 경쟁률(접수/선발)·응시율만 못 냅니다.\\n→ 확인: 부산 2025년 행정직 원서접수현황 자료. (없으면 이 1행만 미상으로 남김)',
 }
 _er=_dd(lambda:{'접수':[],'응시':[]})
 for r in rows:
@@ -94,6 +93,14 @@ tbody tr:hover{background:#f8fbff}.r{text-align:right}
 .itbl th,.itbl td{padding:8px 11px;border-bottom:1px solid #f1f3f5;text-align:left;font-size:13px}
 .itbl th{background:#f8fafc;font-size:12px;color:var(--mut)}
 .st-미입력,.st-x{color:#b91c1c;font-weight:600}
+.icard{border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:11px 14px;margin-bottom:9px;background:#fff}
+.icard.prep{border-left-color:#a855f7}.icard.gap{border-left-color:#f59e0b}
+.ihead{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.ireg{font-weight:700;font-size:14px}
+.ibadge2{font-size:11px;background:#eef2ff;color:var(--acc);border-radius:10px;padding:1px 9px;font-weight:600}
+.istat{font-size:12px;color:var(--cut);font-weight:600}
+.imemo{font-size:13px;line-height:1.75;color:#374151;white-space:pre-wrap;word-break:break-word}
+.imemo .rows{display:block;margin-top:6px;padding:7px 10px;background:#f8fafc;border-radius:6px;font-size:12px;color:#6b7280}
 </style></head><body>
 <header><h1>✅ 합격선 관리 v2 — 검증본</h1>
 <div class="sub" id="meta"></div>
@@ -154,16 +161,24 @@ function renderIssues(){
  const ORD=['미입력','사용자 준비중','접수인원 미반영','응시인원 미반영','확인필요','잔여 보강'];
  const grp={};ISSUES.forEach(i=>{(grp[i['구분']]=grp[i['구분']]||[]).push(i)});
  const keys=Object.keys(grp).sort((a,b)=>(ORD.indexOf(a)+99*(ORD.indexOf(a)<0))-(ORD.indexOf(b)+99*(ORD.indexOf(b)<0)));
- let h='<div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:8px 0 14px;font-size:12.5px;line-height:1.7">'
+ const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ let h='<div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:8px 0 14px;font-size:12.5px;line-height:1.8">'
   +'<b>읽는 법</b> — 데이터가 채워지면 항목이 자동으로 사라집니다.<br>'
   +'• <b>🧑‍💻 사용자 준비중</b>: 엑셀로 정리 중인 6개 시·군별 지역(합격선 자체가 아직 없음).<br>'
-  +'• <b>△ 접수/응시인원 미반영</b>: 합격선·선발은 있으나 접수(출원) 또는 응시인원만 일부 빈 행. 메모에 <b>왜 비었는지</b>와 <b>정확히 어떤 연도·직렬·대상</b>인지 다 적혀있음.<br>'
-  +'• 미선발·비공개로 응시가 0인 행은 정상이라 여기 표시 안 함.</div>';
+  +'• <b>△ 접수/응시인원 미반영</b>: 합격선·선발은 있으나 접수(출원)·응시인원만 일부 빈 행. 카드 안에 <b>왜 비었는지</b>와 <b>정확히 어떤 연도·직렬·대상</b>인지 다 적혀있음.<br>'
+  +'• 미선발·비공개로 응시가 0인 행은 정상이라 표시 안 함.</div>';
  keys.forEach(k=>{const a=grp[k];
-  h+=`<div class="igrp">${k} <span style="color:var(--mut);font-weight:400">(${a.length})</span></div>`;
-  h+='<table class="itbl"><thead><tr><th style="width:70px">지역</th><th style="width:120px">상태</th><th style="width:200px">항목</th><th>사유/메모</th></tr></thead><tbody>';
-  h+=a.map(i=>`<tr><td><b>${i['지역']}</b></td><td>${i['상태']}</td><td>${i['항목']}</td><td style="color:var(--mut)">${i['메모']||''}</td></tr>`).join('');
-  h+='</tbody></table>';
+  h+=`<div class="igrp">${k} <span style="color:var(--mut);font-weight:400">· ${a.length}건</span></div>`;
+  h+=a.map(i=>{
+    const cls=k=='사용자 준비중'?'prep':(k.indexOf('미반영')>=0?'gap':'');
+    let memo=esc(i['메모']||'');
+    // '▷ 해당 행:' 이후는 회색 박스로
+    memo=memo.replace(/\\n/g,'\n');
+    const sp=memo.indexOf('▷ 해당 행:');
+    let body=memo, rowsbox='';
+    if(sp>=0){body=memo.slice(0,sp).trim(); rowsbox=`<span class="rows">${memo.slice(sp)}</span>`;}
+    return `<div class="icard ${cls}"><div class="ihead"><span class="ireg">${i['지역']}</span><span class="ibadge2">${i['항목']}</span><span class="istat">${i['상태']}</span></div><div class="imemo">${body}${rowsbox}</div></div>`;
+  }).join('');
  });
  $('#issues').innerHTML=h;
 }
