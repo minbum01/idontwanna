@@ -201,8 +201,7 @@ function renderVisible(){
  const start=Math.max(0,Math.floor(_scrollTop/ROW_H)-OVERSCAN);
  const end=Math.min(total,start+VISIBLE);
  const body=$('#vs-body');
- body.style.cssText=`display:block`;  // allow padding trick
- // padding top/bottom to simulate full height
+ // padding top/bottom으로 전체 높이 시뮬레이션 (tbody는 정상 table-row-group 유지 → 헤더 정렬됨)
  const padTop=start*ROW_H, padBot=(total-end)*ROW_H;
  let h=`<tr style="height:${padTop}px;display:${padTop?'table-row':'none'}"><td colspan="${COLS.length}"></td></tr>`;
  for(let i=start;i<end;i++) h+=rowHtml(_filtered[i]);
