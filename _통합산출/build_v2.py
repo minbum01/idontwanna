@@ -31,14 +31,25 @@ for _reg in ALL_REG:
     for _jt in ['공무원','교행']:
         if (_reg,_jt) not in _done:
             issues.append({'구분':'미입력','지역':_reg,'항목':_jt+' 합격선','상태':'❌ 미처리','메모':'원본 폴더에 파일 있음 · 합격선 아직 입력 안 함'})
-_agg=_dd(lambda:[0,0,0])
+def _misun(r):  # 미선발/비공개 → 접수·응시 0 이 정상(이슈 아님)
+    return ('미선발' in r['비고']) or ('비공개' in r['비고']) or (not r['합격선'].strip() and r['필기합격인원'].strip() in ('','0'))
+_REASON={
+ ('광주','공무원'): '【원본 일부 부재】 제2회 경력경쟁(의료기술: 방사선·임상병리·물리치료)과 기술계고졸(공업 일반전기) 전형의 출원(접수)인원만 비어있음. 합격선·응시·경쟁률(응시/선발)은 보유. 가진 응시현황이 제1회 공채분뿐이라 제2회 경채·고졸 출원자료가 없음. → 필요: 광주광역시 제2회(경력경쟁/고졸) 출원현황 자료.',
+ ('제주','공무원'): '【원본 부재】 2025년 원서접수현황 파일이 폴더에 없음(2026년분만 존재). 그래서 2025 전 직렬의 접수(출원)인원·경쟁률(접수/선발)만 비어있음. 2025 합격선·선발·응시·응시율·경쟁률(응시/선발)은 완비, 2023·2024는 접수까지 완비. → 필요: 제주 2025(제3·4회) 원서접수현황 자료.',
+ ('부산','공무원'): '【매칭 누락·소수】 2025 행정(일반행정) 1건만 접수 비어있음. 응시현황 자료 주시거나 수기 보완으로 해결 가능.',
+}
+_er=_dd(lambda:{'접수':[],'응시':[]})
 for r in rows:
-    a=_agg[(r['지역'],r['시험종류'])]; a[0]+=1
-    if r['경쟁률(접수/선발)'].strip(): a[1]+=1
-    if r['경쟁률(응시/선발)'].strip(): a[2]+=1
-for (_reg,_jt),a in sorted(_agg.items()):
-    if a[1]<a[0]: issues.append({'구분':'접수 미보강','지역':_reg,'항목':_jt+' 경쟁률(접수)','상태':f'△ {a[1]}/{a[0]}','메모':'접수 일부 미반영 또는 원본 부재'})
-    if a[2]<a[0]: issues.append({'구분':'응시 미보강','지역':_reg,'항목':_jt+' 경쟁률(응시)','상태':f'△ {a[2]}/{a[0]}','메모':'응시 일부 미반영 또는 원본 부재'})
+    if _misun(r): continue
+    _lab=f"{r['연도']} {r['직렬']}"+(f"·{r['직류']}" if r['직류'] and r['직류']!=r['직렬'] else '')+(f"({r['대상']})" if r['대상'] not in ('일반','') else '')+(f" [{r['임용예정기관']}]" if r['임용예정기관'] else '')
+    if not r['접수인원'].strip(): _er[(r['지역'],r['시험종류'])]['접수'].append(_lab)
+    if not r['응시인원'].strip(): _er[(r['지역'],r['시험종류'])]['응시'].append(_lab)
+for (_reg,_jt),_e in sorted(_er.items()):
+    _rsn=_REASON.get((_reg,_jt),'사유 확인 필요(데이터는 있을 수 있으니 수기 점검).')
+    for _fld in ['접수','응시']:
+        if _e[_fld]:
+            _it=_e[_fld]; _show=', '.join(_it[:24])+(f' …외 {len(_it)-24}건' if len(_it)>24 else '')
+            issues.append({'구분':f'{_fld}인원 미반영','지역':_reg,'항목':f'{_jt} · {_fld}인원 {len(_it)}건','상태':'△ 보완대상','메모':_rsn+'  ▷ 해당 행: '+_show})
 _man=os.path.join(D,'이슈_수기.csv')
 if os.path.exists(_man):
     with open(_man,encoding='utf-8-sig') as fp:
@@ -140,10 +151,14 @@ function tab(t){
 }
 function renderIssues(){
  $('#ibadge').textContent=ISSUES.length;
- const ORD=['미입력','확인필요','원본없음','접수 미보강','응시 미보강','잔여 보강','사용자 준비중'];
+ const ORD=['미입력','사용자 준비중','접수인원 미반영','응시인원 미반영','확인필요','잔여 보강'];
  const grp={};ISSUES.forEach(i=>{(grp[i['구분']]=grp[i['구분']]||[]).push(i)});
  const keys=Object.keys(grp).sort((a,b)=>(ORD.indexOf(a)+99*(ORD.indexOf(a)<0))-(ORD.indexOf(b)+99*(ORD.indexOf(b)<0)));
- let h='<p class="sub" style="margin:6px 0 10px">처리하면서 막히거나 미뤄둔 항목입니다. 데이터가 채워지면 자동으로 사라집니다.</p>';
+ let h='<div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin:8px 0 14px;font-size:12.5px;line-height:1.7">'
+  +'<b>읽는 법</b> — 데이터가 채워지면 항목이 자동으로 사라집니다.<br>'
+  +'• <b>🧑‍💻 사용자 준비중</b>: 엑셀로 정리 중인 6개 시·군별 지역(합격선 자체가 아직 없음).<br>'
+  +'• <b>△ 접수/응시인원 미반영</b>: 합격선·선발은 있으나 접수(출원) 또는 응시인원만 일부 빈 행. 메모에 <b>왜 비었는지</b>와 <b>정확히 어떤 연도·직렬·대상</b>인지 다 적혀있음.<br>'
+  +'• 미선발·비공개로 응시가 0인 행은 정상이라 여기 표시 안 함.</div>';
  keys.forEach(k=>{const a=grp[k];
   h+=`<div class="igrp">${k} <span style="color:var(--mut);font-weight:400">(${a.length})</span></div>`;
   h+='<table class="itbl"><thead><tr><th style="width:70px">지역</th><th style="width:120px">상태</th><th style="width:200px">항목</th><th>사유/메모</th></tr></thead><tbody>';
