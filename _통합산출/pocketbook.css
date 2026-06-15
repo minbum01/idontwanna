@@ -442,6 +442,8 @@ body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
 .dcard tbody tr:not(:last-child){border-bottom:.2mm solid #f2f4f7;}
 .dcard .cutrow td{color:var(--red);font-weight:700;}
 .dcard .cutrow td:first-child{color:var(--red-deep);}
+.dcard .cut1row td{color:var(--gold);font-weight:600;}
+.dcard .cut1row td:first-child{color:var(--gold);}
 
 /* ── 랭킹(합격선·경쟁률) ── */
 .rankwrap{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
