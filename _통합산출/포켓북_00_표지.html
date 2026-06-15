@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>필기 합격선 배치표 — 표지(이미지)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="pocketbook.css">
+<style>
+  /* 표지: 추출한 원본 이미지를 A5 한 장에 꽉 채움 (최종 출력은 원본 디자인 파일로) */
+  .page.imgcover{padding:0;overflow:hidden;background:#fff;}
+  .page.imgcover::before{display:none;}
+  .page.imgcover img{width:100%;height:100%;object-fit:cover;display:block;}
+  @media print{ @page{size:148mm 210mm;margin:0;} .spread{width:auto !important;height:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div><b>필기 합격선 배치표</b> · 표지 <span class="meta">— 원본 추출 이미지(미리보기용) · 최종 출력은 원본 파일</span></div>
+  <div class="btns">
+    <button class="b-print" onclick="window.print()">🖨 인쇄 / PDF</button>
+  </div>
+</div>
+
+<div class="fitwrap">
+<div class="deck" id="deck">
+<!-- SPREADS:START -->
+  <div class="spread">
+    <div class="page imgcover">
+      <img src="표지_앞.png" alt="필기 합격선 배치표 표지">
+    </div>
+  </div>
+<!-- SPREADS:END -->
+</div>
+</div>
+
+<script src="pocketbook.js"></script>
+</body>
+</html>

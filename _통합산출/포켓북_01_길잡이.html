@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포켓북 PART 0 길잡이</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="pocketbook.css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div><b>합격선 포켓북</b> · PART 0 길잡이 <span class="meta">— A5 펼침면 · 인쇄 1:1</span></div>
+  <div class="btns">
+    <button class="b-fb" id="fbBtn" onclick="toggleFb()">⚑ 피드백 보기</button>
+    <button class="b-print" onclick="window.print()">🖨 인쇄 / PDF</button>
+  </div>
+</div>
+
+<div class="fitwrap">
+<div class="deck" id="deck">
+<!-- SPREADS:START -->
+
+  <!-- ===================== 펼침 1 : p5 | p6 ===================== -->
+  <div class="spread">
+
+    <!-- PAGE 5 : 용어 정의 + 4개년 요약 -->
+    <div class="page">
+      <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>용어 · 요약</span></div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-1</span><h3 class="serif">용어 정의</h3><span style="font-size:var(--fs-xs);color:var(--muted)">— 실제 데이터로 보기</span></div>
+        <div class="bd">
+          <table class="extab">
+            <caption>예시 · 서울특별시 2025년 9급</caption>
+            <thead><tr><th>직렬</th><th>①선발</th><th>②출원</th><th>③응시</th><th>④응시율</th><th>⑤경쟁률</th><th>⑥합격선</th></tr></thead>
+            <tbody>
+              <tr><td>일반행정</td><td>666</td><td>10,051</td><td>6,838</td><td>68%</td><td>15.1:1</td><td class="cut">88</td></tr>
+              <tr><td>사회복지</td><td>121</td><td>1,534</td><td>1,129</td><td>74%</td><td>12.7:1</td><td class="cut">81<span class="sub" style="color:var(--gold)">양성 78</span></td></tr>
+            </tbody>
+          </table>
+          <div class="defs">
+            <div class="d"><span class="num">①</span><span><em>선발인원</em> 최종 선발 예정 인원</span></div>
+            <div class="d"><span class="num">②</span><span><em>출원인원</em> 원서 접수자(=출원)</span></div>
+            <div class="d"><span class="num">③</span><span><em>응시인원</em> 실제 필기 응시</span></div>
+            <div class="d"><span class="num">④</span><span><em>응시율</em> 응시 ÷ 출원</span></div>
+            <div class="d"><span class="num">⑤</span><span><em>경쟁률</em> 출원 ÷ 선발</span></div>
+            <div class="d"><span class="num">⑥</span><span><em>합격선</em> 필기합격 마지막 점수(가산점 미반영)</span></div>
+          </div>
+          <p style="margin-top:1.5mm;font-size:var(--fs-sm)"><strong>양성평등 합격선</strong> — 한 성별이 합격선에 못 미칠 때 적용되는 별도(낮은) 합격선. 위 표 <strong>사회복지 81점 → 양성평등 78점</strong>처럼 표기. <span style="color:var(--muted)">항상 일반 합격선보다 낮거나 같음.</span></p>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-2</span><h3 class="serif">4개년 요약</h3><span class="flag real fb">실데이터</span></div>
+        <div class="bd">
+          <table class="extab fix">
+            <colgroup><col style="width:26mm"><col><col><col><col></colgroup>
+            <caption>전 직렬 합계 · 윗줄 선발 / 아랫줄 출원 · <span style="color:var(--muted)">회색 = 예시(목업)</span></caption>
+            <thead><tr><th>구분</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr></thead>
+            <tbody>
+              <tr><td>국가직 9급</td><td><span class="mk">6,000</span><span class="sub mk">120,000</span></td><td><span class="mk">5,800</span><span class="sub mk">110,000</span></td><td><span class="mk">5,500</span><span class="sub mk">100,000</span></td><td><span class="mk">5,500</span><span class="sub mk">98,000</span></td></tr>
+              <tr><td>지방직 9급</td><td>13,012<span class="sub">137,466</span></td><td>11,708<span class="sub">118,157</span></td><td>12,642<span class="sub">107,465</span></td><td><span class="mk">12,500</span><span class="sub mk">100,000</span></td></tr>
+              <tr><td>국가직 7급</td><td><span class="mk">760</span><span class="sub mk">35,000</span></td><td><span class="mk">750</span><span class="sub mk">33,000</span></td><td><span class="mk">700</span><span class="sub mk">31,000</span></td><td><span class="mk">700</span><span class="sub mk">30,000</span></td></tr>
+              <tr><td>지방직 7급<span class="sub">광역시</span></td><td>154<span class="sub">18,747</span></td><td>186<span class="sub">16,399</span></td><td>112<span class="sub">12,893</span></td><td><span class="mk">110</span><span class="sub mk">12,000</span></td></tr>
+              <tr><td>지방 교행</td><td>2,536<span class="sub">29,814</span></td><td>2,354<span class="sub">26,524</span></td><td>1,533<span class="sub">25,917</span></td><td><span class="mk">1,500</span><span class="sub mk">24,000</span></td></tr>
+            </tbody>
+          </table>
+          <div class="sumnote">※ 회색 숫자(국가직·2026 등)는 예시(목업) — 자료 입력 후 실값으로 교체</div>
+        </div>
+      </div>
+      <div class="folio"><span class="src">합격선 포켓북 2023–2026</span><span class="pg serif">05</span></div>
+    </div>
+
+    <!-- PAGE 6 : 시험제도 변화 + 거주 응시요건 -->
+    <div class="page">
+      <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>제도 변화 · 거주 요건</span></div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-3</span><h3 class="serif">시험제도 변화</h3></div>
+        <div class="bd">
+          <table class="chg">
+            <colgroup><col style="width:20mm"><col></colgroup>
+            <thead><tr><th>시점</th><th>변화 내용</th></tr></thead>
+            <tbody>
+              <tr><td>~2021년</td><td>9급 선택과목제 · 조정점수 적용</td></tr>
+              <tr><td>2022년</td><td>9급 <strong>선택과목 폐지</strong> → 전 직렬 공통 필수과목 체제</td></tr>
+              <tr><td>2025년</td><td>국어·영어 <strong>출제기조 전환</strong> — 단순 암기 → 종합사고·추론(PSAT형) · 시험시간 <strong>100분 → 110분</strong></td></tr>
+              <tr><td>2027년</td><td>9급 <strong>한국사 폐지 → 한능검 대체</strong> · <strong>4과목 체제</strong> · 과목당 <strong>25문항</strong><br><strong>지방직 7급</strong> — 국어 대신 <strong>PSAT 도입</strong></td></tr>
+              <tr><td>추진 중</td><td>국가직 9급 <strong>PSAT 도입 추진</strong> — 2027년 이후 구체적 시행안 발표 예정</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-4</span><h3 class="serif">지방직 거주지 제한 — 응시 요건</h3></div>
+        <div class="bd">
+          <p><strong>현행(2026)</strong>은 아래 <strong>① 또는 ②</strong>를 충족하면 응시(OR). <strong>③ 학교</strong> 요건은 2027 도입 예정(확정 전). 판단 기준은 <strong>주민등록표</strong>(전입·전출일) — 실거주·가족·부동산은 따지지 않습니다.</p>
+          <div class="rescond">
+            <div class="rc-head"><span class="num">①</span><b>합산 3년 거주</b><span class="rc-sub">2026.1.1 이전까지 합산 36개월↑ · 연속 아니어도 됨</span></div>
+            <div class="rc-ex"><span class="ex-lbl">예</span> 경남<i>(유년)</i> <i>→</i> 부산<i>(학창)</i> <i>→</i> 경기<i>(현재)</i> <span class="ex-arr">⇒ 응시 가능</span> <span class="rg">경남</span><span class="rg">부산</span><span class="rg">경기</span><span class="rg add">＋서울</span> <i>= 4곳 (서울은 제한 없음)</i></div>
+          </div>
+          <div class="rescond">
+            <div class="rc-head"><span class="num">②</span><b>당해 연속 거주</b><span class="rc-sub">시험연도 내내 그 지역 거주</span></div>
+            <div class="tline"><span class="tl-pt">2026.1.1</span><span class="tl-bar">해당 지역 계속 거주</span><span class="tl-pt">최종시험일</span></div>
+          </div>
+          <div class="rescond">
+            <div class="rc-head"><span class="num">③</span><b>해당 지역 학교</b><span class="rc-sub">그 지역 소재 학교 재학·졸업</span><span class="new-badge tent">2027 도입 예정 · 확정 전</span></div>
+          </div>
+          <div class="infg-res"><div class="arr">▼</div><span class="pill">현행 ①·② 중 하나만 충족하면 응시</span></div>
+          <p style="margin-top:2.6mm;font-size:var(--fs-sm)">📌 <strong>공통 예외</strong> — 관내 <strong>기술계고(특성화·마이스터고) 졸업(예정)자</strong>는 대부분 거주지 제한 없음. <strong>서울시</strong>는 제한 없음(전국 응시). 지역·직렬별 제한은 다음 장.</p>
+        </div>
+      </div>
+      <div class="folio"><span class="src">합격선 포켓북 2023–2026</span><span class="pg serif">06</span></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== 펼침 2 : p7 | p8 (시·도별 거주지 제한) ===================== -->
+  <div class="spread">
+
+    <!-- PAGE 7 : 광역시·특별시 + 거주기간 계산·증빙(참고) -->
+    <div class="page">
+      <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>시·도별 거주지 제한 ①</span></div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-5</span><h3 class="serif">시·도별 거주지 제한</h3><span style="font-size:var(--fs-xs);color:var(--muted)">특별·광역시 · 2026</span></div>
+        <div class="bd">
+          <p>도·시 <strong>공통 요건(①·②)</strong> 충족 시 <span style="color:#235c3b;font-weight:600">🟢 자유 지원</span> 지역은 내부 어디든 지원 가능. <span style="color:#8a2f2f;font-weight:600">🔴 개별 제한</span> 시·군은 해당 시·군 거주 기록 필수.</p>
+          <table class="rtab">
+            <colgroup><col class="c-sido"><col class="c-free"><col></colgroup>
+            <thead><tr><th class="h-sido">시·도</th><th class="h-free">🟢 자유 지원 (도·시 공통요건)</th><th class="h-rest">🔴 시·군 개별 제한</th></tr></thead>
+            <tbody>
+              <tr><td class="sido">서울</td><td class="free">전국 누구나 거주지 상관없이 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">부산</td><td class="free">부산시 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">대구</td><td class="free">대구시 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">인천</td><td class="free">중구, 동구, 미추홀구, 연수구, 남동구, 부평구, 계양구, 서구</td><td class="rest"><strong>강화군</strong> — 행정·사회복지·농업·보건·간호 직렬은 강화군 거주 필수(강화군 구분모집)</td></tr>
+              <tr><td class="sido">광주</td><td class="free">광주시 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">대전</td><td class="free">대전시 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">울산</td><td class="free">울산시 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음</td></tr>
+              <tr><td class="sido">세종</td><td class="free">세종시 공통 요건 충족 시 지원 가능</td><td class="none">없음</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:1.5mm;font-size:var(--fs-xs);color:var(--muted)">※ 서울교육청은 서울·인천·경기 중 한 곳의 거주 요건만 충족하면 지원 가능. 도(道) 지역은 다음 장 →</p>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">참고</span><h3 class="serif">거주기간 계산 · 증빙</h3></div>
+        <div class="bd">
+          <div class="howto">
+            <div class="ht"><div class="t">🧮 합산 3년 계산</div>
+              <ul><li><b>·</b>과거 거주 기간 <strong>모두 합산</strong>(연속 아니어도 됨)</li><li><b>·</b>월 단위 · 잔여 <strong>30일↑ = 1개월</strong></li></ul></div>
+            <div class="ht"><div class="t">🗺️ 행정구역 개편</div>
+              <ul><li><b>·</b><strong>현재 행정구역</strong> 기준 환산</li><li><b>·</b>옛 군위군=현 대구 / 옛 연기군=현 세종</li></ul></div>
+          </div>
+          <p style="margin-top:2mm;font-size:var(--fs-sm)">📄 증빙은 <strong>주민등록표(초본)</strong> 기준. 실거주·가족·부동산은 따지지 않음. 재외국민은 국내거소신고 사실증명.</p>
+        </div>
+      </div>
+      <div class="folio"><span class="src">출처: 거주지제한 자료(2026)</span><span class="pg serif">07</span></div>
+    </div>
+
+    <!-- PAGE 8 : 도(道) -->
+    <div class="page">
+      <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>시·도별 거주지 제한 ②</span></div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-5</span><h3 class="serif">시·도별 거주지 제한</h3><span style="font-size:var(--fs-xs);color:var(--muted)">도(道) · 2026</span></div>
+        <div class="bd">
+          <table class="rtab">
+            <colgroup><col class="c-sido"><col class="c-free"><col></colgroup>
+            <thead><tr><th class="h-sido">시·도</th><th class="h-free">🟢 자유 지원</th><th class="h-rest">🔴 시·군 개별 제한 (해당 시·군 거주 필수)</th></tr></thead>
+            <tbody>
+              <tr><td class="sido">경기</td><td class="free">수원, 고양, 용인, 성남, 부천, 화성 등 28개 시 전체</td><td class="rest">양평군, 가평군, 연천군</td></tr>
+              <tr><td class="sido">강원</td><td class="free">춘천시, 원주시, 강릉시, 속초시</td><td class="rest">동해, 삼척, 태백, 홍천, 횡성, 영월, 평창, 정선, 철원, 화천, 양구, 인제, 고성, 양양</td></tr>
+              <tr><td class="sido">충북</td><td class="free">충청북도 공통 요건 충족 시 전 지역 지원 가능</td><td class="none">없음 (단, 일부 군의회 모집 시 예외 발생 가능)</td></tr>
+              <tr><td class="sido">충남</td><td class="free">천안시, 충청남도(도청)</td><td class="rest">공주, 보령, 아산, 서산, 논산, 계룡, 당진, 금산, 부여, 서천, 청양, 홍성, 예산, 태안 / 천안시의회, 논산시의회, 서천군의회, 태안군의회</td></tr>
+              <tr><td class="sido">전북</td><td class="free">전주시</td><td class="rest">군산, 익산, 정읍, 남원, 김제, 완주, 진안, 무주, 장수, 임실, 순창, 고창, 부안</td></tr>
+              <tr><td class="sido">전남</td><td class="free">목포, 여수, 순천, 나주, 광양 등 19개 시·군</td><td class="rest">완도군, 진도군, 신안군</td></tr>
+              <tr><td class="sido">경북</td><td class="free">포항, 경주, 김천, 안동, 구미 등 15개 시·군</td><td class="rest">청송군, 영양군, 영덕군, 봉화군, 울진군</td></tr>
+              <tr><td class="sido">경남</td><td class="free">창원, 진주, 통영, 사천, 김해, 밀양, 거제, 양산</td><td class="rest">의령, 함안, 창녕, 고성, 남해, 하동, 산청, 함양, 거창, 합천</td></tr>
+              <tr><td class="sido">제주</td><td class="free">제주시, 서귀포시 자유롭게 지원 가능</td><td class="none">없음</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:2.5mm;font-size:var(--fs-xs);color:var(--muted)">※ 교육청은 권역별 거주 제한(충남 1·2권역 등)이 2026년 전면 폐지되어 도내 자유 지원. 기술계고 졸업(예정)자·수의·연구사 등 일부 직렬은 제한 없음(공고 확인).</p>
+        </div>
+      </div>
+      <div class="folio"><span class="src">출처: 거주지제한 자료(2026)</span><span class="pg serif">08</span></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== 펼침 3 : p9 (변하고 있는 사항) ===================== -->
+  <div class="spread">
+
+    <div class="page hasfb">
+      <span class="fb-dot fb">FB</span>
+      <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>변하고 있는 사항</span></div>
+      <div class="blk">
+        <div class="mh"><span class="n mono">0-6</span><h3 class="serif">변하고 있는 사항</h3><span class="flag chk fb">⚑ 확정 전</span></div>
+        <div class="bd">
+          <div class="changing">
+            <div class="ch-h">🔄 추진 중 · 확정 전 <span class="ch-tag">시행 시 최종 공고 확인</span></div>
+            <p style="font-size:var(--fs-sm);color:#8a6a14;margin-bottom:2.2mm">거주지 응시요건 강화 <b>2027년~</b> · 경찰·소방 적용 <b>2028년~</b> <span style="color:var(--muted)">(요건 내용은 앞 장 참고)</span></p>
+            <div class="howto" style="grid-template-columns:1fr;gap:2mm">
+              <div class="ht"><div class="t">🎯 지역인재 가산점 <span class="ch-tag">도입: 법 개정 후</span></div>
+                <ul><li><b>·</b>지역 15년 이상 거주자</li><li><b>·</b>과목별 만점 <strong>3%</strong> 가산(5과목=15점)</li><li><b>·</b>근무지 확정 시험만 · 합격 10% 상한 · 중복 불가</li></ul></div>
+              <div class="ht"><div class="t">📈 9급 지역구분모집 확대 <span class="ch-tag">국가직 · 2027~28</span></div>
+                <ul><li><b>·</b>선발인원 대비 <strong>6% → 8%(’27) → 10%(’28)</strong></li><li><b>·</b><strong>고용노동·통계</strong> 직류로 확대 <span style="color:var(--muted)">(국가직만 해당)</span></li></ul></div>
+              <div class="ht"><div class="t">🎓 지역인재 추천채용 요건 완화 <span class="ch-tag">2027년~</span></div>
+                <ul><li><b>·</b>7급: 학과성적 상위 <strong>10% → 15% 이내</strong></li><li><b>·</b>9급: 졸업 후 <strong>1년 → 3년 이내</strong></li><li><b>·</b>지방직 9급 대상 → <strong>7급까지 확대</strong></li></ul></div>
+            </div>
+            <p style="margin-top:2mm;font-size:var(--fs-xs);color:#8a6a14">※ 정부 발표 기준 · 세부 내용은 확정 전, 시행 시 최종 공고 확인.</p>
+          </div>
+        </div>
+      </div>
+      <div class="folio"><span class="src">합격선 포켓북 2023–2026</span><span class="pg serif">09</span></div>
+    </div>
+
+  </div>
+
+<!-- SPREADS:END -->
+</div>
+</div>
+
+<script src="pocketbook.js"></script>
+</body>
+</html>
