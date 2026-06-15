@@ -429,6 +429,33 @@ body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
 .rgcut{font-size:6.6pt;background:var(--paper);border:.3mm solid var(--line);border-radius:1.4mm;padding:.5mm 2mm;color:var(--ink-soft);white-space:nowrap;}
 .rgcut b{color:var(--red);font-weight:700;margin-left:.4mm;}
 
+/* ── 직류 카드 (5지표 × 4개년) ── */
+.cardgrid{display:grid;grid-template-columns:1fr 1fr;gap:2mm;}
+.dcard{border:.3mm solid var(--line);border-radius:1.4mm;overflow:hidden;background:#fff;}
+.dcard .dch{display:flex;align-items:baseline;gap:1.6mm;background:var(--paper);padding:.9mm 2.2mm;border-bottom:.3mm solid var(--line);}
+.dcard .dch .nm{font-family:var(--ff-serif);font-weight:800;font-size:7.4pt;color:var(--ink);line-height:1.1;}
+.dcard .dch .jg{font-size:5.4pt;color:var(--muted);margin-left:auto;white-space:nowrap;}
+.dcard table{width:100%;border-collapse:collapse;font-size:6.2pt;}
+.dcard th,.dcard td{padding:.4mm 1.6mm;text-align:right;font-variant-numeric:tabular-nums;line-height:1.2;}
+.dcard thead th{background:#fafbfd;color:var(--muted);font-weight:600;font-size:5.5pt;}
+.dcard th:first-child,.dcard td:first-child{text-align:left;color:var(--ink-soft);font-family:var(--ff-sans);font-weight:500;}
+.dcard tbody tr:not(:last-child){border-bottom:.2mm solid #f2f4f7;}
+.dcard .cutrow td{color:var(--red);font-weight:700;}
+.dcard .cutrow td:first-child{color:var(--red-deep);}
+
+/* ── 랭킹(합격선·경쟁률) ── */
+.rankwrap{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+.rankbox .rkh{font-size:var(--fs-sm);font-weight:700;color:var(--red-deep);margin-bottom:1.2mm;padding-bottom:.8mm;border-bottom:.4mm solid var(--line);}
+.rkrow{display:flex;align-items:baseline;gap:1.6mm;font-size:var(--fs-sm);padding:.9mm 0;border-bottom:.2mm solid #f2f4f7;}
+.rkrow:last-child{border-bottom:none;}
+.rkrow .rkn{font-family:var(--ff-mono);font-size:6.4pt;color:var(--muted);width:4mm;flex-shrink:0;}
+.rkrow .rkl{flex:1;color:var(--ink-soft);}
+.rkrow .rkv{font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+.rkrow .rkv.cut{color:var(--red);}
+
+/* ── 비교(국가직 vs 지방직) ── */
+.cmptab th.gk{background:var(--red);} .cmptab th.jb{background:#5b7cb8;}
+
 /* ───────────────────────── [인쇄 = 개별 A5 낱장] ─────────────────────────
    출판 입고용: 한 장 = A5 한 쪽(도련 3mm 포함, 154×216mm). 인쇄소가 148×210으로 재단.
    제본 여백(안쪽)은 펼침면 위치(verso/recto)대로 페이지 자체 패딩에 이미 반영됨. */
