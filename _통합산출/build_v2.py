@@ -82,6 +82,8 @@ select:focus,input:focus{outline:none;border-color:var(--acc)}
 table{border-collapse:collapse;width:100%;table-layout:fixed}
 th,td{padding:6px 9px;border-bottom:1px solid #f1f3f5;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 thead th{position:sticky;top:0;background:#f8fafc;font-size:12px;font-weight:600;border-bottom:1.5px solid var(--line)}
+thead th:hover{background:#eef2f7}
+.caret{margin-left:3px;color:var(--acc);font-size:10px}
 tbody tr:hover{background:#f8fbff}.r{text-align:right}
 .tag{padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600}
 .t-공무원{background:#dbeafe;color:#1e40af}.t-교행{background:#f3e8ff;color:#6b21a8}
@@ -166,7 +168,38 @@ const cnt=el('span','count'); cnt.id='cnt'; $('#filters').appendChild(cnt);
 // ── 가상 스크롤 ───────────────────────────────────────────────────
 const ROW_H=32, OVERSCAN=5, VISIBLE=Math.ceil(window.innerHeight/ROW_H)+OVERSCAN*2;
 let _filtered=[], _scrollTop=0, _tblWrap=null;
+let _sortKey=null, _sortDir=1;  // 정렬 상태 (1=오름차순, -1=내림차순)
 const TW=COLS.reduce((a,[k])=>a+(W[k]||80),0);
+// 숫자로 정렬할 컬럼(경쟁률·응시율 등은 숫자만 뽑아 비교)
+const NUMK=new Set(['연도','선발예정인원','접수인원','응시인원','필기합격인원','합격선','양성평등합격선','응시율(%)','경쟁률(접수/선발)','경쟁률(응시/선발)']);
+function sortVal(r,k){
+ let v=r[k]; if(v==null||String(v).trim()==='') return null;
+ if(NUMK.has(k)){const m=String(v).match(/-?\d+\.?\d*/); return m?parseFloat(m[0]):null;}
+ return String(v);
+}
+function applySort(){
+ if(!_sortKey) return;
+ const k=_sortKey, d=_sortDir;
+ _filtered.sort((a,b)=>{
+  const x=sortVal(a,k), y=sortVal(b,k);
+  if(x===null&&y===null) return 0;
+  if(x===null) return 1;   // 빈값은 항상 뒤로
+  if(y===null) return -1;
+  if(typeof x==='number'&&typeof y==='number') return (x-y)*d;
+  return String(x).localeCompare(String(y),'ko')*d;
+ });
+}
+function updateCarets(){
+ document.querySelectorAll('#vs-wrap thead th').forEach(th=>{
+  const c=th.querySelector('.caret'); if(!c) return;
+  c.textContent = (th.dataset.key===_sortKey)?(_sortDir>0?'▲':'▼'):'';
+ });
+}
+function sortBy(k){
+ if(_sortKey===k) _sortDir*=-1; else {_sortKey=k; _sortDir=1;}
+ applySort(); _scrollTop=0; if(_tblWrap) _tblWrap.scrollTop=0;
+ renderVisible(); updateCarets();
+}
 
 function buildShell(){
  const wrap=document.createElement('div');
@@ -176,7 +209,7 @@ function buildShell(){
  table.style.cssText=`min-width:${TW}px;table-layout:fixed;border-collapse:collapse;width:100%`;
  // colgroup + thead
  let cg='<colgroup>'+COLS.map(([k])=>`<col style="width:${W[k]||80}px">`).join('')+'</colgroup>';
- cg+='<thead><tr>'+COLS.map(([k,t])=>`<th>${t||k}</th>`).join('')+'</tr></thead>';
+ cg+='<thead><tr>'+COLS.map(([k,t])=>`<th data-key="${k}" onclick="sortBy(this.dataset.key)" title="클릭하면 정렬" style="cursor:pointer;user-select:none">${t||k}<span class="caret"></span></th>`).join('')+'</tr></thead>';
  table.innerHTML=cg;
  const tbody=document.createElement('tbody'); tbody.id='vs-body';
  table.appendChild(tbody); wrap.appendChild(table);
@@ -221,8 +254,9 @@ function draw(){
  _filtered=rows; _scrollTop=0;
  const tblDiv=$('#tbl');
  if(!_tblWrap){tblDiv.innerHTML=''; tblDiv.appendChild(buildShell());}
+ applySort();  // 필터 후에도 현재 정렬 유지
  if(_tblWrap) _tblWrap.scrollTop=0;
- renderVisible();
+ renderVisible(); updateCarets();
 }
 
 function tab(t){

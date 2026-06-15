@@ -14,7 +14,7 @@
   /* ── 폰트 패밀리 (OFL · 상업 무료) ── */
   --ff-serif:'Pretendard', sans-serif;                /* 제목 — Pretendard로 통일 */
   --ff-sans :'Pretendard', 'IBM Plex Sans KR', sans-serif;  /* 본문 — Pretendard */
-  --ff-mono :'IBM Plex Mono', monospace;              /* 숫자·라벨 (Pretendard로 바꾸려면 여기만 수정) */
+  --ff-mono :'Pretendard', sans-serif;                /* 숫자·라벨도 Pretendard로 통일 (정렬은 tabular-nums) */
 
   /* ── 글자 크기 (인쇄 기준 pt) ── */
   --fs-cover    : 34pt;   /* PART 표지 대제목 */
@@ -49,13 +49,27 @@
   --th-fg   :#ffffff;   /* 표 헤더 흰 글씨 */
   --screen-bg:#2a3246;  /* 화면 배경(블루톤) */
 
-  /* ── 판형·간격 ── */
-  --pg-w   : 148mm;     /* A5 너비 */
-  --pg-h   : 210mm;     /* A5 높이 */
-  --pg-padv: 12mm;      /* 페이지 상하 여백 */
-  --pg-padh: 11mm;      /* 페이지 좌우 여백 */
-  --pg-padb: 10mm;      /* 페이지 하단 여백 */
-  --spread-w: 296mm;    /* 펼침면(=A5×2) */
+  /* ── 판형·제본 (무선제본 · A5 · ~150쪽 기준) ── */
+  --trim-w : 148mm;    /* 재단 후 A5 너비 */
+  --trim-h : 210mm;    /* 재단 후 A5 높이 */
+  --bleed  : 3mm;      /* 도련(재단 여유) — 사방 3mm */
+  --pg-w   : 154mm;    /* 작업 너비 = trim + 도련×2 (148+6) */
+  --pg-h   : 216mm;    /* 작업 높이 = 210+6 */
+  --spread-w: 308mm;   /* 펼침면(=작업 너비×2) */
+  /* 본문 여백(재단선 기준) — 안쪽(제본)>바깥 */
+  --m-top  : 12mm;     /* 위 */
+  --m-bot  : 10mm;     /* 아래 */
+  --m-out  : 9mm;      /* 바깥(책배 쪽) */
+  --m-in   : 13mm;     /* 안쪽(제본·gutter) — KDP 최소 9.5mm 상회 */
+  /* 페이지 가장자리 기준 실제 인셋(도련 포함) */
+  --in-top : calc(var(--bleed) + var(--m-top));   /* 15mm */
+  --in-bot : calc(var(--bleed) + var(--m-bot));   /* 13mm */
+  --in-out : calc(var(--bleed) + var(--m-out));   /* 12mm */
+  --in-in  : calc(var(--bleed) + var(--m-in));    /* 16mm */
+  /* 하위호환(옛 변수명) */
+  --pg-padv: var(--m-top);
+  --pg-padh: var(--m-out);
+  --pg-padb: var(--m-bot);
   --radius : 1.5mm;
   --line-w : .3mm;
 }
@@ -79,13 +93,40 @@ body{font-family:var(--ff-sans);color:var(--ink);background:var(--screen-bg);-we
 .fitwrap{overflow:hidden;}
 .deck{width:max-content;margin:0 auto;transform-origin:top center;padding:24px 0 50px;display:flex;flex-direction:column;gap:32px;}
 .spread{display:flex;gap:0;box-shadow:0 16px 50px rgba(0,0,0,.5);}
-.spread .page:first-child{border-right:1px solid #e7ddcc;}
 
 .page{width:var(--pg-w);height:var(--pg-h);background:var(--card);position:relative;overflow:hidden;
-  padding:var(--pg-padv) var(--pg-padh) var(--pg-padb);display:flex;flex-direction:column;
+  padding:var(--in-top) var(--in-out) var(--in-bot) var(--in-in);display:flex;flex-direction:column;
   background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,.015) 1px,transparent 0);background-size:5mm 5mm;}
-.page::before{content:"";position:absolute;left:0;top:9mm;bottom:9mm;width:1.4mm;background:repeating-linear-gradient(var(--paper-2),var(--paper-2) 1.2mm,transparent 1.2mm,transparent 2.6mm);opacity:.45;}
-.spread .page:last-child::before{left:auto;right:0;}
+/* ── 제본 여백(gutter) 자동 좌우 — 펼침면 위치로 결정 ── */
+.spread .page:first-child{padding-left:var(--in-out);padding-right:var(--in-in);}   /* 왼쪽면(verso): 안쪽=오른쪽 */
+.spread .page:last-child {padding-left:var(--in-in); padding-right:var(--in-out);}   /* 오른쪽면(recto): 안쪽=왼쪽 */
+/* 낱장(표지·간지 등)은 클래스로 명시 — 위 규칙보다 우선 */
+.spread .page.verso{padding-left:var(--in-out);padding-right:var(--in-in);}
+.spread .page.recto{padding-left:var(--in-in); padding-right:var(--in-out);}
+/* 쪽번호(folio)는 바깥쪽 모서리에 — 왼쪽면(verso)=왼쪽 / 오른쪽면(recto)=오른쪽 */
+.spread .page:first-child .folio,
+.spread .page.verso .folio{flex-direction:row-reverse;}
+.spread .page:last-child .folio,
+.spread .page.recto .folio{flex-direction:row;}
+/* 제본 무늬 = 책등(안쪽) 쪽에 */
+.page::before{content:"";position:absolute;left:var(--bleed);top:calc(var(--bleed) + 6mm);bottom:calc(var(--bleed) + 6mm);width:1.4mm;background:repeating-linear-gradient(var(--paper-2),var(--paper-2) 1.2mm,transparent 1.2mm,transparent 2.6mm);opacity:.45;}
+.spread .page:first-child::before,.page.verso::before{left:auto;right:var(--bleed);}
+.spread .page:last-child::before, .page.recto::before{left:var(--bleed);right:auto;}
+/* 빈 페이지 — ifc=표지 안쪽(검토 전용, 인쇄 안 함) / blank=홀짝 정합용 실제 공백면 */
+.page.blank{background:#fff;}
+.page.blank::before{display:none;}
+.page.ifc::after,.page.pad::after{display:none;}
+/* 표지 등 풀블리드(이미지) 낱장 — 여백 없이 도련까지 꽉 채움 */
+.page.imgcover{padding:0;}
+.page.imgcover::before{display:none;}
+.page.imgcover img{width:100%;height:100%;object-fit:cover;display:block;}
+/* 화면 두쪽보기: 책등(가운데) 그림자 + 재단선/도련 가이드(인쇄 시 숨김) */
+@media screen{
+  .spread .page:first-child{box-shadow:inset -10px 0 16px -10px rgba(0,0,0,.18);}
+  .spread .page:last-child {box-shadow:inset  10px 0 16px -10px rgba(0,0,0,.18);}
+  .page::after{content:"";position:absolute;inset:var(--bleed);border:.25mm dashed rgba(178,58,46,.45);pointer-events:none;z-index:60;}
+  body.no-guide .page::after{display:none;}
+}
 
 .rhead{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--ff-mono);font-size:var(--fs-xs);letter-spacing:.1em;color:var(--muted);text-transform:uppercase;border-bottom:.4mm solid var(--line);padding-bottom:1.8mm;}
 .rhead .r{color:var(--red);font-weight:600;}
@@ -128,7 +169,7 @@ dl.terms{border-top:var(--line-w) solid var(--line);display:grid;grid-template-c
 .extab caption{caption-side:top;text-align:left;font-size:var(--fs-xs);color:var(--muted);margin-bottom:1mm;}
 .extab th{background:var(--th-bg);color:var(--th-fg);font-weight:600;font-size:var(--fs-thead);padding:1.6mm 1.6mm;text-align:right;white-space:nowrap;}
 .extab th:first-child{text-align:left;}
-.extab td{padding:1.5mm 1.6mm;border-bottom:var(--line-w) solid var(--line);text-align:right;font-family:var(--ff-mono);color:var(--ink-soft);}
+.extab td{padding:1.5mm 1.6mm;border-bottom:var(--line-w) solid var(--line);text-align:right;font-family:var(--ff-mono);font-variant-numeric:tabular-nums;color:var(--ink-soft);}
 .extab td:first-child{text-align:left;font-family:var(--ff-sans);font-weight:600;color:var(--ink);}
 .extab tr:last-child td{border-bottom:none;}
 .extab .cut{color:var(--red);font-weight:700;}
@@ -148,15 +189,15 @@ dl.terms{border-top:var(--line-w) solid var(--line);display:grid;grid-template-c
 .rtab col.c-sido{width:13mm;} .rtab col.c-free{width:35mm;}
 .rtab th{color:#fff;font-weight:600;font-size:6.8pt;padding:1.7mm 2mm;text-align:left;vertical-align:middle;letter-spacing:.01em;}
 .rtab th.h-sido{background:var(--ink);}
-.rtab th.h-free{background:#2f7d52;}
-.rtab th.h-rest{background:#b23a3a;}
+.rtab th.h-free{background:var(--red);}        /* 자유 지원 = 브랜드 블루 */
+.rtab th.h-rest{background:#b45309;}           /* 개별 제한 = 앰버(경고) */
 .rtab td{padding:1.7mm 2mm;border-bottom:.3mm solid #e7e0d2;vertical-align:top;line-height:1.45;}
 .rtab td.sido{font-family:var(--ff-sans);font-weight:700;color:var(--ink);white-space:nowrap;background:#eef2f8;}
-.rtab td.free{color:#235c3b;background:#f1f8f3;}
-.rtab td.rest{color:#8a2f2f;background:#fcf2f2;font-weight:500;}
+.rtab td.free{color:#21407f;background:#eef3fb;}
+.rtab td.rest{color:#8a5410;background:#fbf3e6;font-weight:500;}
 .rtab td.none{color:var(--muted);background:#fbfbfa;font-weight:400;font-style:italic;}
 .rtab tr:last-child td{border-bottom:none;}
-.rtab td.allfree{background:#eaf4ee;color:#235c3b;}
+.rtab td.allfree{background:#e8f0fb;color:#21407f;}
 
 /* 직렬 예외 리스트 */
 .exlist{list-style:none;}
@@ -282,16 +323,126 @@ body:not(.show-fb) .q{color:var(--ink-soft);font-weight:400;}
 body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
 .fb-dot{position:absolute;top:5mm;right:7mm;background:var(--red);color:#fff;font-family:var(--ff-mono);font-size:var(--fs-flag);font-weight:700;padding:.6mm 2mm;border-radius:3mm;}
 
-/* ───────────────────────── [인쇄] ─────────────────────────
-   펼침면(A5 두 쪽)을 A4 가로 한 장에 딱 맞춤 → 사이 여백 없음, 글씨 실제 A5 크기 */
-@page{size:var(--spread-w) 210mm;margin:0;}
+/* ───────────────────────── [자주하는 질문 / 직류별 설명] ───────────────────────── */
+.faq .qa{padding:5mm 0;border-bottom:.3mm solid var(--line);}
+.faq .qa:first-child{padding-top:1.5mm;}
+.faq .qa:last-child{border-bottom:none;padding-bottom:0;}
+.faq .q{font-size:9.5pt;font-weight:800;color:var(--ink);line-height:1.9;margin-bottom:2.6mm;letter-spacing:-.01em;}
+.faq .q .qn{display:inline-block;background:var(--red);color:#fff;font-family:var(--ff-mono);font-size:7pt;font-weight:700;padding:.4mm 1.8mm;border-radius:2.4mm;margin-right:2mm;vertical-align:.4mm;line-height:1.5;}
+.faq .q .qt{background:linear-gradient(transparent 56%, #ffe27a 56%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .5mm;}
+.faq .a{position:relative;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.5;padding-left:5.4mm;}
+.faq .a::before{content:"↳";position:absolute;left:.8mm;top:0;color:var(--red);font-weight:800;font-size:9pt;line-height:1.3;}
+.faq .a .lead{font-weight:700;color:var(--red-deep);}
+
+.jobwrap{display:grid;grid-template-columns:1fr 1fr;gap:0 5mm;}
+.jobcol .ct{font-family:var(--ff-serif);font-size:var(--fs-sm);font-weight:700;color:var(--red);padding-bottom:1mm;margin-bottom:.4mm;border-bottom:.4mm solid var(--line);}
+.jobcol .j{padding:.85mm 0;border-bottom:.3mm solid var(--line);font-size:6.5pt;line-height:1.3;color:var(--ink-soft);}
+.jobcol .j:last-child{border-bottom:none;}
+.jobcol .j b{color:var(--red-deep);font-weight:700;}
+.jobcol .j i{font-style:normal;font-family:var(--ff-mono);font-size:5.8pt;color:var(--muted);margin-left:.5mm;}
+
+/* ───────────────────────── [도비라(속표지) · 목차 · 간지] ───────────────────────── */
+/* ── 도비라 / 속표지 ── */
+.titlepage{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;}
+.titlepage .tp-kick{font-family:var(--ff-mono);font-size:8pt;letter-spacing:.32em;color:var(--red);font-weight:600;margin-bottom:7mm;}
+.titlepage h1{font-family:var(--ff-serif);font-weight:800;font-size:30pt;letter-spacing:-.015em;color:var(--ink);line-height:1.08;margin:0;}
+.titlepage .tp-sub{font-size:var(--fs-body);color:var(--ink-soft);margin-top:4.5mm;line-height:1.55;}
+.titlepage .tp-rule{width:22mm;height:.5mm;background:var(--red);margin:8mm 0;}
+.titlepage .tp-tags{display:flex;gap:2mm;margin-bottom:7mm;}
+.titlepage .tp-tags span{font-family:var(--ff-serif);font-size:11pt;font-weight:700;color:var(--red-deep);}
+.titlepage .tp-tags i{font-style:normal;color:var(--line);}
+.titlepage .tp-meta{font-family:var(--ff-mono);font-size:var(--fs-xs);color:var(--muted);line-height:1.9;letter-spacing:.04em;}
+
+/* ── 목차 ── */
+.toc-h{display:flex;align-items:baseline;gap:3mm;border-bottom:.7mm double var(--ink);padding-bottom:2.4mm;margin-bottom:1mm;}
+.toc-h .ko{font-family:var(--ff-serif);font-weight:800;font-size:16pt;color:var(--ink);}
+.toc-h .en{font-family:var(--ff-mono);font-size:7pt;letter-spacing:.22em;color:var(--gold);}
+.toc .zone{display:flex;align-items:center;gap:2.4mm;margin:3.4mm 0 1.8mm;}
+.toc .zone .zt{font-family:var(--ff-mono);font-size:6.4pt;font-weight:700;letter-spacing:.1em;padding:.6mm 2.4mm;border-radius:10mm;background:var(--paper);border:.3mm solid var(--line);color:var(--red-deep);white-space:nowrap;}
+.toc .zone .zl{flex:1;height:.3mm;background:var(--line);}
+.toc .zone .zd{font-size:var(--fs-xs);color:var(--muted);white-space:nowrap;}
+.toc .tpart{margin-bottom:1.6mm;}
+.toc .ph{display:flex;align-items:baseline;gap:2mm;flex-wrap:wrap;}
+.toc .ph .pn{font-family:var(--ff-mono);color:#fff;background:var(--red);font-weight:600;font-size:6pt;padding:.5mm 1.7mm;border-radius:1.2mm;letter-spacing:.04em;}
+.toc .ph .pn.nat{background:var(--gold);}
+.toc .ph .pt{font-family:var(--ff-serif);font-weight:800;font-size:10pt;color:var(--ink);}
+.toc .ph .pd{font-size:var(--fs-xs);color:var(--muted);}
+.toc .ph .pg{margin-left:auto;font-family:var(--ff-mono);font-size:var(--fs-sm);font-weight:600;color:var(--red-deep);}
+.toc .trow{display:flex;align-items:baseline;font-size:var(--fs-sm);color:var(--ink-soft);padding:.5mm 0 .5mm 5mm;line-height:1.35;}
+.toc .trow .dots{flex:1;border-bottom:.3mm dotted var(--line);margin:0 1.8mm;transform:translateY(-1mm);min-width:6mm;}
+.toc .trow .pg{font-family:var(--ff-mono);color:var(--muted);font-size:var(--fs-xs);}
+.toc .regchips{display:flex;flex-wrap:wrap;gap:1.4mm;padding:1mm 0 0 5mm;}
+.toc .regchips .rc{font-size:6.6pt;background:var(--paper);border:.3mm solid var(--line);border-radius:8mm;padding:.4mm 2mm;color:var(--ink-soft);}
+.toc-note{margin-top:auto;font-size:var(--fs-xs);color:var(--muted);border-top:.3mm solid var(--line);padding-top:1.8mm;}
+
+/* ── 목차 v2 (CONTENT 헤더 밴드 + 좌 파트카드 / 우 항목·점선) ── */
+.toc2{display:flex;flex-direction:column;height:100%;}
+.toc2-h{display:flex;align-items:baseline;gap:3.5mm;background:var(--ink);color:#fff;border-radius:2.2mm;padding:3.2mm 4.5mm;margin-bottom:4.5mm;}
+.toc2-h .ko{font-family:var(--ff-serif);font-weight:800;font-size:15pt;letter-spacing:-.01em;}
+.toc2-h .en{font-family:var(--ff-serif);font-weight:800;font-size:10pt;letter-spacing:.2em;color:rgba(255,255,255,.5);}
+.crow{display:grid;grid-template-columns:36mm 1fr;gap:4mm;align-items:center;padding:4.2mm 0;border-bottom:.3mm solid var(--line);}
+.crow:last-of-type{border-bottom:none;}
+.cpart{border-radius:2.2mm;padding:2.6mm 3.2mm;color:#fff;}
+.cpart .cno{display:block;font-family:var(--ff-mono);font-size:6.4pt;font-weight:700;letter-spacing:.14em;opacity:.82;margin-bottom:.4mm;}
+.cpart .cnm{font-family:var(--ff-serif);font-weight:800;font-size:11.5pt;line-height:1.08;}
+.cpart.g-com{background:var(--ink);}            /* 공통 */
+.cpart.g-nat{background:var(--gold);}            /* 국가직 */
+.cpart.g-loc{background:var(--red);}             /* 지방직 */
+.citems{min-width:0;}
+.ci{display:flex;align-items:baseline;gap:2mm;font-size:var(--fs-sm);color:var(--ink-soft);padding:.8mm 0;line-height:1.3;}
+.ci .cinum{font-family:var(--ff-mono);font-weight:700;color:var(--red);font-size:7pt;flex-shrink:0;}
+.ci .cilbl{flex-shrink:1;}
+.ci .cidots{flex:1;border-bottom:.3mm dotted var(--line);transform:translateY(-1mm);min-width:4mm;}
+.ci .cipg{font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-size:7.5pt;}
+.toc2-chips{display:flex;flex-wrap:wrap;gap:1.2mm;margin-top:1.2mm;}
+.toc2-chips .rc{font-size:6pt;background:var(--paper);border:.3mm solid var(--line);border-radius:8mm;padding:.3mm 1.8mm;color:var(--ink-soft);}
+
+/* ── 간지 (파트 도비라) ── */
+/* 표지(해커스 네이비→연블루→화이트) 색감의 은은한 그라데이션을 페이지 전체 배경에 */
+.page.divpage{background:linear-gradient(158deg,#cdddf3 0%,#e7f0fb 38%,#fbfdff 100%);}
+.page.divpage::before{opacity:.28;}
+.divider{position:relative;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;}
+.divider .bignum{position:absolute;right:3mm;bottom:5mm;font-family:var(--ff-serif);font-weight:800;font-size:128pt;line-height:.78;color:rgba(47,85,164,.14);z-index:0;user-select:none;}
+.divider>*{position:relative;z-index:1;}
+.divider .dz{font-family:var(--ff-mono);font-size:6.6pt;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--red);padding:.7mm 2.6mm;border-radius:10mm;align-self:flex-start;}
+.divider .dz.nat{background:var(--gold);}
+.divider .dz.common{background:var(--ink);}
+.divider .dpn{font-family:var(--ff-mono);font-size:9.5pt;letter-spacing:.22em;color:var(--red);font-weight:600;}
+.divider .dt{font-family:var(--ff-serif);font-weight:800;font-size:34pt;color:var(--ink);margin:2mm 0 3.5mm;line-height:1.04;letter-spacing:-.02em;}
+.divider .dd{font-size:var(--fs-body);color:var(--ink-soft);max-width:84mm;line-height:1.62;}
+.divider .dlist{margin-top:6mm;border-top:.4mm solid var(--line);padding-top:3.2mm;max-width:92mm;}
+.divider .dlist li{list-style:none;font-size:var(--fs-sm);color:var(--ink-soft);padding:.9mm 0;line-height:1.4;display:flex;gap:2mm;}
+.divider .dlist li b{font-family:var(--ff-mono);color:var(--red);flex-shrink:0;}
+.divider .dstat{margin-top:5mm;font-size:var(--fs-xs);}
+.divider .dstat .tag{font-family:var(--ff-mono);font-size:6.2pt;font-weight:700;padding:.5mm 2mm;border-radius:8mm;}
+.divider .dstat .ok{background:#e4eefb;color:var(--red-deep);}
+.divider .dstat .prep{background:#eef0f4;color:var(--muted);}
+
+/* ── 국가직(PART 1) 본문용 표·권역칩 ── */
+.extab.natab{font-size:7.4pt;}
+.extab.natab th,.extab.natab td{padding:1.15mm 1.5mm;}
+.extab.natab caption{margin-bottom:1.2mm;}
+.rgblk{margin:2mm 0 0;}
+.rgblk:first-child{margin-top:0;}
+.rgh{font-size:var(--fs-sm);font-weight:700;color:var(--red-deep);margin-bottom:1.2mm;}
+.rgrow{display:flex;flex-wrap:wrap;gap:1.4mm;}
+.rgcut{font-size:6.6pt;background:var(--paper);border:.3mm solid var(--line);border-radius:1.4mm;padding:.5mm 2mm;color:var(--ink-soft);white-space:nowrap;}
+.rgcut b{color:var(--red);font-weight:700;margin-left:.4mm;}
+
+/* ───────────────────────── [인쇄 = 개별 A5 낱장] ─────────────────────────
+   출판 입고용: 한 장 = A5 한 쪽(도련 3mm 포함, 154×216mm). 인쇄소가 148×210으로 재단.
+   제본 여백(안쪽)은 펼침면 위치(verso/recto)대로 페이지 자체 패딩에 이미 반영됨. */
+@page{size:var(--pg-w) var(--pg-h);margin:0;}
 @media print{
   body{background:#fff;}
   .toolbar{display:none;}
   .fitwrap{overflow:visible;}
-  .deck{transform:none !important;gap:0;padding:0;margin:0;width:auto;}
-  .spread{display:flex;width:var(--spread-w);height:210mm;box-shadow:none;page-break-after:always;page-break-inside:avoid;}
-  .spread .page{border:none !important;margin:0;}
-  .spread .page:first-child{border-right:.2mm solid #e7ddcc !important;}
+  .deck{transform:none !important;gap:0;padding:0;margin:0;width:auto;display:block;}
+  .spread{display:block;width:auto;height:auto;box-shadow:none;}     /* 펼침 해제 → 낱장으로 흐름 */
+  .page{box-shadow:none !important;page-break-after:always;page-break-inside:avoid;break-inside:avoid;}
+  .spread:last-child .page:last-child{page-break-after:auto;break-after:auto;}  /* 마지막 쪽만 break 해제(빈 페이지 방지) */
+  .page::after{display:none !important;}   /* 화면 재단선 가이드 숨김 */
+  .page::before{display:none !important;}  /* 장식용 제본 무늬 숨김(실제 출력에 안 찍히게) */
+  .page.ifc,.page.pad{display:none !important;}   /* 화면 전용 공백(표지 안쪽·짝맞춤)은 인쇄 제외 */
   .fb{display:none !important;}
 }
