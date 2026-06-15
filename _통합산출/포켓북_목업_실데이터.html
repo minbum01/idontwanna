@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지방직·교행 합격선 포켓북 — 실데이터 개선 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f7f3ec;--card:#fffdf9;--paper-2:#efe8db;--ink:#23262d;--ink-soft:#4a4742;--muted:#897f70;--line:#ddd3c2;--red:#b23a2e;--red-deep:#8f2c22;--gold:#bd8e3a;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans KR',sans-serif;color:var(--ink);background:#2a2d34;background-image:radial-gradient(circle at 50% 0%,#34373f,#232529 70%);min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;}
+.serif{font-family:'Nanum Myeongjo',serif;}.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+.bar{width:100%;max-width:760px;padding:18px 20px 6px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.bar .t{color:#f3eee4;}.bar .t b{font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:1rem;display:block;}
+.bar .t span{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#a59c8c;letter-spacing:.08em;}
+.badge{background:rgba(123,180,110,.16);border:1px solid #7bb46e;color:#9ed18f;font-size:.68rem;padding:6px 11px;border-radius:20px;font-weight:600;white-space:nowrap;}
+.viewer{width:100%;max-width:760px;padding:14px 20px 0;display:flex;justify-content:center;}
+.stage-outer{position:relative;margin:0 auto;}
+.stage{position:absolute;top:0;left:0;width:480px;height:681px;transform-origin:top left;}
+.page{position:absolute;inset:0;background:var(--card);border-radius:3px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.45);padding:36px 34px 26px;display:flex;flex-direction:column;opacity:0;transform:translateX(26px) scale(.985);transition:opacity .45s ease,transform .45s ease;pointer-events:none;}
+.page.active{opacity:1;transform:none;pointer-events:auto;}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:repeating-linear-gradient(var(--paper-2),var(--paper-2) 5px,transparent 5px,transparent 10px);opacity:.5;}
+.rhead{display:flex;justify-content:space-between;align-items:baseline;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:8px;}
+.rhead .r{color:var(--red);font-weight:600;}
+.ptitle{font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:1.45rem;margin:14px 0 2px;letter-spacing:-.01em;}
+.psub{font-size:.76rem;color:var(--muted);margin-bottom:14px;}
+.folio{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.folio .src{font-size:.58rem;color:var(--muted);}.folio .pg{font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:.95rem;}
+.toc-kick{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.25em;color:var(--red);font-weight:600;}
+.toc-h{font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:1.9rem;margin:4px 0 18px;}
+.toc-grp{margin-bottom:11px;}.toc-pn{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--red);font-weight:600;}
+.toc-pt{font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:.98rem;margin:1px 0 4px;}
+.toc-row{display:flex;align-items:baseline;font-size:.74rem;color:var(--ink-soft);padding:2px 0;}
+.toc-row .lbl{white-space:nowrap;}.toc-row .dots{flex:1;border-bottom:1px dotted var(--line);margin:0 6px;transform:translateY(-3px);}
+.toc-row .num{font-family:'IBM Plex Mono',monospace;color:var(--muted);font-size:.7rem;}
+.term{padding:7px 0;border-bottom:1px solid var(--line);}.term:last-child{border:none;}
+.term dt{font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:.9rem;color:var(--ink);display:flex;align-items:baseline;gap:8px;}
+.term dt .en{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gold);letter-spacing:.05em;}
+.term dd{font-size:.74rem;color:var(--ink-soft);margin-top:1px;}.term dd .f{font-family:'IBM Plex Mono',monospace;color:var(--red);font-size:.7rem;}
+.krit{margin-top:12px;display:grid;gap:7px;}
+.kr{background:var(--paper);border-left:3px solid var(--red);padding:8px 11px;border-radius:0 5px 5px 0;font-size:.76rem;color:var(--ink-soft);}
+.kr b{color:var(--red-deep);}
+.big-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.bstat{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;}
+.bstat .k{font-size:.64rem;color:var(--muted);letter-spacing:.03em;}
+.bstat .v{font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:1.4rem;color:var(--ink);line-height:1.1;margin:3px 0 1px;}
+.bstat .v small{font-size:.8rem;}.bstat .d{font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;color:var(--muted);}
+.down{color:var(--red);}.up{color:#6f9c5a;}
+.note-box{background:#fbeee9;border-left:3px solid var(--red);padding:10px 12px;border-radius:0 5px 5px 0;}
+.note-box .nt{font-size:.64rem;font-weight:700;color:var(--red-deep);letter-spacing:.06em;margin-bottom:3px;}
+.note-box p{font-size:.73rem;color:var(--red-deep);line-height:1.5;}.note-box b{color:var(--red-deep);}
+.page.divider{justify-content:center;align-items:center;text-align:center;background:linear-gradient(155deg,#2d3039,#1a1d22);padding:40px;}
+.page.divider::before{display:none;}
+.divider .dn{font-family:'IBM Plex Mono',monospace;color:var(--gold);letter-spacing:.35em;font-size:.82rem;}
+.divider h2{font-family:'Nanum Myeongjo',serif;font-weight:800;color:var(--paper);font-size:2.4rem;margin:14px 0;line-height:1.1;}
+.divider .dl{width:50px;height:3px;background:var(--red);margin:8px auto 16px;}
+.divider .dd{color:#b8b1a3;font-size:.82rem;max-width:230px;line-height:1.6;}
+.divider .dcontents{margin-top:22px;color:#8c8576;font-family:'IBM Plex Mono',monospace;font-size:.68rem;line-height:1.9;letter-spacing:.03em;}
+.dt{width:100%;border-collapse:collapse;font-size:.74rem;margin-bottom:4px;}
+.dt th{background:var(--ink);color:var(--paper);font-weight:600;font-size:.64rem;padding:6px 5px;text-align:right;}
+.dt th:first-child{text-align:left;}
+.dt td{padding:6px 5px;text-align:right;border-bottom:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:.72rem;}
+.dt td:first-child{text-align:left;font-family:'IBM Plex Sans KR';font-weight:600;}
+.dt tr:last-child td{border-bottom:none;}.dt .cut{color:var(--red);font-weight:700;}
+.dt .rngcell{color:var(--ink-soft);font-size:.68rem;}.dt .tba{color:var(--muted);font-style:italic;font-family:'IBM Plex Sans KR';}
+.dt tbody tr:nth-child(even) td{background:rgba(221,211,194,.18);}
+.rbwrap{margin-top:14px;}.tt2{font-size:.68rem;color:var(--muted);margin-bottom:10px;}
+.rb{margin-bottom:16px;}
+.rb-track{position:relative;height:7px;background:var(--paper-2);border-radius:4px;margin:14px 0 2px;}
+.rb-span{position:absolute;top:0;height:7px;background:linear-gradient(90deg,#e6b9a0,var(--red));border-radius:4px;}
+.rb-med{position:absolute;top:-4px;width:2px;height:15px;background:var(--ink);}
+.rb-med span{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:700;color:var(--ink);}
+.rb-lo,.rb-hi{position:absolute;top:9px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--muted);transform:translateX(-50%);}
+.ryr{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:-12px;margin-bottom:4px;}
+.trend{margin-top:14px;}.trend .tt{font-size:.68rem;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;}
+.trend .tt b{color:var(--ink);font-family:'IBM Plex Sans KR';}
+.bars{display:flex;align-items:flex-end;gap:12px;height:88px;padding-top:16px;}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end;}
+.bar .col{width:60%;background:linear-gradient(var(--red),var(--red-deep));border-radius:3px 3px 0 0;position:relative;min-height:3px;}
+.bar .col .v{position:absolute;top:-15px;left:-50%;right:-50%;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--ink);font-weight:600;}
+.bar .yr{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted);}
+.bar.future .col{background:repeating-linear-gradient(45deg,var(--line),var(--line) 4px,transparent 4px,transparent 8px);border:1px dashed var(--muted);}
+.rk-h{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--gold);font-weight:600;letter-spacing:.1em;margin:12px 0 5px;}
+.rank{list-style:none;}.rank li{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);font-size:.78rem;}
+.rank li:last-child{border-bottom:none;}.rank .pos{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--red);width:14px;}
+.rank .nm{flex:1;font-weight:500;}.rank .sc{font-family:'IBM Plex Mono',monospace;font-weight:700;}
+.rank .mt{font-size:.64rem;color:var(--muted);width:54px;text-align:right;}
+.controls{display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 20px 30px;flex-wrap:wrap;}
+.nav{background:var(--paper);color:var(--ink);border:none;width:42px;height:42px;border-radius:50%;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:transform .15s,background .15s;display:flex;align-items:center;justify-content:center;}
+.nav:hover{background:#fff;transform:translateY(-2px);}
+.counter{color:#f3eee4;font-family:'IBM Plex Mono',monospace;font-size:.85rem;min-width:74px;text-align:center;letter-spacing:.08em;}
+.dots{display:flex;gap:7px;width:100%;justify-content:center;margin-top:6px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#5a5d65;cursor:pointer;transition:background .2s,transform .2s;}
+.dot.on{background:var(--gold);transform:scale(1.3);}
+.hint{color:#80796c;font-size:.7rem;text-align:center;width:100%;margin-top:10px;font-family:'IBM Plex Mono',monospace;}
+</style></head><body>
+<div class="bar"><div class="t"><b>지방직·교행 합격선 포켓북 — 개선 목업</b><span>A5 · 실데이터 기반(2023~2025) · 12p</span></div>
+<div class="badge">✓ 실제 검증데이터 8,664행 집계</div></div>
+<div class="viewer"><div class="stage-outer" id="outer"><div class="stage" id="stage">
+<div class="page active">
+ <div class="rhead"><span>POCKET BOOK</span><span class="r">CONTENTS</span></div>
+ <div class="toc-kick mono">2023 — 2026 · 실데이터 기반</div>
+ <div class="toc-h serif">목차</div>
+ <div class="toc-grp"><span class="toc-pn mono">PART 0</span><div class="toc-pt serif">길잡이</div>
+  <div class="toc-row"><span class="lbl">일러두기 · 용어 / 3대 기준</span><span class="dots"></span><span class="num">06</span></div>
+  <div class="toc-row"><span class="lbl">4개년 핵심 요약</span><span class="dots"></span><span class="num">08</span></div></div>
+ <div class="toc-grp"><span class="toc-pn mono">PART 1</span><div class="toc-pt serif">지방직 9급 공무원</div>
+  <div class="toc-row"><span class="lbl">전국 종합(합격선 <b>범위</b>)</span><span class="dots"></span><span class="num">12</span></div>
+  <div class="toc-row"><span class="lbl">시도별 상세 (17개 시도)</span><span class="dots"></span><span class="num">16</span></div>
+  <div class="toc-row"><span class="lbl">직렬별 / 양성평등 합격선</span><span class="dots"></span><span class="num">40</span></div></div>
+ <div class="toc-grp"><span class="toc-pn mono">PART 2</span><div class="toc-pt serif">지방직 7급 <span style="font-size:.7rem;color:var(--gold)">— 주요 광역시 한정</span></div>
+  <div class="toc-row"><span class="lbl">서울·부산·대구·인천·광주</span><span class="dots"></span><span class="num">46</span></div></div>
+ <div class="toc-grp"><span class="toc-pn mono">PART 3</span><div class="toc-pt serif">지방교육행정직 (교육청 9급)</div>
+  <div class="toc-row"><span class="lbl">전국 종합 / 시도교육청별 (총점)</span><span class="dots"></span><span class="num">54</span></div></div>
+ <div class="toc-grp"><span class="toc-pn mono">PART 4</span><div class="toc-pt serif">비교 · 분석</div>
+  <div class="toc-row"><span class="lbl">시도 합격선 랭킹(범위)</span><span class="dots"></span><span class="num">70</span></div></div>
+ <div class="folio"><span class="src"></span><span class="pg serif">4</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>0-1 일러두기</span></div>
+ <div class="ptitle serif">용어 정의 & 3대 기준</div>
+ <div class="psub">이 책의 모든 표는 아래 기준으로 작성되었습니다.</div>
+ <dl>
+  <div class="term"><dt>선발 / 출원 / 응시</dt><dd>선발예정·원서접수·실제응시 인원.</dd></div>
+  <div class="term"><dt>경쟁률 <span class="en">RATIO</span></dt><dd>출원 ÷ 선발. <span class="f">(예: 11.8 : 1)</span></dd></div>
+  <div class="term"><dt>합격선 <span class="en">CUT-OFF</span></dt><dd>필기합격 마지막 점수. <span class="f">가산점 미반영.</span></dd></div>
+  <div class="term"><dt>양성평등 합격선</dt><dd>양성평등채용목표제 적용 시 별도 합격선.</dd></div>
+ </dl>
+ <div class="krit">
+  <div class="kr"><b>① 공개경쟁만</b> 수록 — 경력경쟁(운전·시설관리·조리 등) 제외</div>
+  <div class="kr"><b>② 회차 주의</b> — 지역마다 회차 상이(서울 1~3회, 제주 3·4회 등). 표는 연도 기준</div>
+  <div class="kr"><b>③ 단위 다름</b> — 공무원=<b>과목평균</b>(100점), 교행=<b>총점</b>(500점)</div>
+ </div>
+ <div class="folio"><span class="src">※ 실데이터: 검증_data.csv 8,664행(2023~2025)</span><span class="pg serif">6</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 0 · 길잡이</span><span>0-4 핵심 요약</span></div>
+ <div class="ptitle serif">4개년 핵심 요약</div>
+ <div class="psub">지방직 9급 일반행정 · 전국 합산 (실데이터)</div>
+ <div class="big-stats">
+  <div class="bstat"><div class="k">2025 합격선 범위</div><div class="v">51~95<small>점</small></div><div class="d mono">중앙 81점</div></div>
+  <div class="bstat"><div class="k">2025 경쟁률</div><div class="v">11.8<small> : 1</small></div><div class="d down mono">14.7 → 11.8</div></div>
+  <div class="bstat"><div class="k">2025 선발</div><div class="v">4,608<small>명</small></div><div class="d mono">235개 모집단위</div></div>
+  <div class="bstat"><div class="k">2025 응시율</div><div class="v up">74<small>%</small></div><div class="d mono">출원 54,527</div></div>
+ </div>
+ <div class="trend"><div class="tt"><span>합격선 중앙값 추이</span><b>단위: 점</b></div>
+  <div class="bars">
+   <div class="bar"><div class="col" style="height:85%"><span class="v">85</span></div><span class="yr">2023</span></div>
+   <div class="bar"><div class="col" style="height:82%"><span class="v">82</span></div><span class="yr">2024</span></div>
+   <div class="bar"><div class="col" style="height:81%"><span class="v">81</span></div><span class="yr">2025</span></div>
+   <div class="bar future"><div class="col" style="height:50%"></div><span class="yr">2026</span></div></div></div>
+ <div class="note-box" style="margin-top:14px;"><div class="nt mono">읽는 법</div>
+  <p>전국 일반행정 합격선은 <b>단일값이 아니라 51~95점 범위</b>입니다(지역·시군별). "전국 평균"만 보지 말고 내 지역 페이지를 확인하세요.</p></div>
+ <div class="folio"><span class="src">출처: 지자체 공고 · 실집계</span><span class="pg serif">8</span></div></div>
+<div class="page divider"><div class="dn mono">PART 1</div><h2 class="serif">지방직 9급</h2>
+ <div class="dl"></div><p class="dd">전국 종합부터 17개 시도 · 직렬 · 양성평등까지.</p>
+ <div class="dcontents">전국 종합 · · · 12<br>시도별 · · · · · 16<br>직렬 / 양성평등 · 40</div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 1 · 지방직 9급</span><span>1-1 전국 종합</span></div>
+ <div class="ptitle serif">전국 종합 · 일반행정</div>
+ <div class="psub">전국 합산 · 합격선은 <b style="color:var(--red)">평균이 아닌 범위</b>로 표기</div>
+ <table class="dt"><thead><tr><th>연도</th><th>선발</th><th>출원</th><th>경쟁</th><th>중앙</th><th>합격선범위</th></tr></thead>
+  <tbody><tr><td>2023</td><td>4,938</td><td>72,818</td><td>14.7</td><td class='cut'>85</td><td class='rngcell'>44~94</td></tr><tr><td>2024</td><td>3,814</td><td>57,183</td><td>15.0</td><td class='cut'>82</td><td class='rngcell'>55~92</td></tr><tr><td>2025</td><td>4,608</td><td>54,527</td><td>11.8</td><td class='cut'>81</td><td class='rngcell'>51~95</td></tr><tr><td>2026</td><td class='tba'>예정</td><td class='tba'>—</td><td class='tba'>—</td><td class='tba'>—</td><td class='tba'>6.20 시행</td></tr></tbody></table>
+ <div class="rbwrap"><div class="tt2">합격선 분포 (최저 — 중앙 — 최고)</div>
+  <div class="rb"><div class="rb-track"><div class="rb-span" style="left:7%;width:83%"></div><div class="rb-med" style="left:75%"><span>85</span></div><div class="rb-lo" style="left:7%">44</div><div class="rb-hi" style="left:90%">94</div></div></div><div class="ryr">2023</div>
+  <div class="rb"><div class="rb-track"><div class="rb-span" style="left:25%;width:62%"></div><div class="rb-med" style="left:70%"><span>82</span></div><div class="rb-lo" style="left:25%">55</div><div class="rb-hi" style="left:87%">92</div></div></div><div class="ryr">2024</div>
+  <div class="rb"><div class="rb-track"><div class="rb-span" style="left:18%;width:73%"></div><div class="rb-med" style="left:68%"><span>81</span></div><div class="rb-lo" style="left:18%">51</div><div class="rb-hi" style="left:92%">95</div></div></div><div class="ryr">2025</div>
+ </div>
+ <div class="folio"><span class="src">※ 단일 "전국 합격선"은 존재하지 않음 · 실데이터</span><span class="pg serif">12</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 1 · 지방직 9급</span><span>1-2 시도별 · 서울</span></div>
+ <div class="ptitle serif">서울특별시</div>
+ <div class="psub">직렬별 · 2025년 · 합격선=중앙값</div>
+ <table class="dt"><thead><tr><th>직렬</th><th>선발</th><th>출원</th><th>경쟁</th><th>합격선</th></tr></thead>
+  <tbody><tr><td>일반행정</td><td>666</td><td>10,051</td><td>15.1</td><td class='cut'>88</td></tr><tr><td>사회복지</td><td>121</td><td>1,534</td><td>12.7</td><td class='cut'>81</td></tr><tr><td>일반토목</td><td>114</td><td>620</td><td>5.4</td><td class='cut'>68</td></tr><tr><td>지방세</td><td>98</td><td>2,058</td><td>21.0</td><td class='cut'>84</td></tr><tr><td>건축</td><td>52</td><td>424</td><td>8.2</td><td class='cut'>77</td></tr><tr><td>전기시설</td><td>31</td><td>309</td><td>10.0</td><td class='cut'>75</td></tr></tbody></table>
+ <div class="note-box" style="margin-top:14px;"><div class="nt mono">서울은 단일시험</div>
+  <p>서울·부산 등 광역시는 시 전체가 한 시험이라 직렬당 합격선이 1개. <b>도(道) 지역은 시·군마다 달라</b> 범위로 봅니다(다음 장 랭킹 참고).</p></div>
+ <div class="folio"><span class="src">※ 가산점 미반영 · 실데이터</span><span class="pg serif">16</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 1 · 지방직 9급</span><span>1-3 직렬별</span></div>
+ <div class="ptitle serif">직렬별 합격선 비교</div>
+ <div class="psub">전국 · 2025년 · 선발 많은 순</div>
+ <table class="dt"><thead><tr><th>직렬</th><th>선발</th><th>중앙</th><th>범위</th></tr></thead>
+  <tbody><tr><td>일반행정</td><td>4,608</td><td class='cut'>81</td><td class='rngcell'>51~95</td></tr><tr><td>일반토목</td><td>1,118</td><td class='cut'>64</td><td class='rngcell'>45~91</td></tr><tr><td>사회복지</td><td>722</td><td class='cut'>75</td><td class='rngcell'>0~93</td></tr><tr><td>건축</td><td>646</td><td class='cut'>66</td><td class='rngcell'>0~99</td></tr><tr><td>지방세</td><td>543</td><td class='cut'>76</td><td class='rngcell'>0~89</td></tr><tr><td>일반농업</td><td>313</td><td class='cut'>78</td><td class='rngcell'>54~97</td></tr></tbody></table>
+ <div class="trend"><div class="tt"><span>직렬별 합격선 중앙값</span><b>단위: 점</b></div>
+  <div class="bars"><div class="bar"><div class="col" style="height:81%"><span class="v">81</span></div><span class="yr">일반</span></div><div class="bar"><div class="col" style="height:64%"><span class="v">64</span></div><span class="yr">일반</span></div><div class="bar"><div class="col" style="height:75%"><span class="v">75</span></div><span class="yr">사회</span></div><div class="bar"><div class="col" style="height:66%"><span class="v">66</span></div><span class="yr">건축</span></div><div class="bar"><div class="col" style="height:76%"><span class="v">76</span></div><span class="yr">지방</span></div></div></div>
+ <div class="folio"><span class="src">상담 시 "직렬 전략" 근거 · 실데이터</span><span class="pg serif">40</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 1 · 지방직 9급</span><span>1-4 양성평등</span></div>
+ <div class="ptitle serif">양성평등 합격선</div>
+ <div class="psub">양성평등채용목표제 적용 직렬 (전체 189건 중 발췌)</div>
+ <table class="dt"><thead><tr><th>지역·직렬</th><th></th><th>일반</th><th>양성</th><th>차</th></tr></thead>
+  <tbody><tr><td>서울</td><td>일반행정</td><td class='cut'>91</td><td style='color:var(--gold);font-weight:700'>90</td><td>1</td></tr><tr><td>서울</td><td>사회복지</td><td class='cut'>81</td><td style='color:var(--gold);font-weight:700'>78</td><td>3</td></tr><tr><td>서울</td><td>속기</td><td class='cut'>87</td><td style='color:var(--gold);font-weight:700'>86</td><td>1</td></tr><tr><td>서울</td><td>일반기계</td><td class='cut'>79</td><td style='color:var(--gold);font-weight:700'>76</td><td>3</td></tr><tr><td>서울</td><td>일반전기</td><td class='cut'>87</td><td style='color:var(--gold);font-weight:700'>84</td><td>3</td></tr></tbody></table>
+ <div class="note-box" style="margin-top:14px;"><div class="nt mono">차별화 콘텐츠</div>
+  <p>한쪽 성별이 합격선에 못 미쳐도 <b>양성평등 합격선</b>으로 추가합격 가능. 타 교재에 거의 없는 정보로, 이 책만의 강점입니다.</p></div>
+ <div class="folio"><span class="src">※ 항상 양성평등 ≤ 일반 합격선 · 실데이터</span><span class="pg serif">44</span></div></div>
+<div class="page divider"><div class="dn mono">PART 3</div><h2 class="serif">지방<br>교육행정직</h2>
+ <div class="dl"></div><p class="dd">17개 시·도교육청 9급 · 총점 기준.</p>
+ <div class="dcontents">전국 종합 · · · 54<br>시도교육청별 · 56</div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 3 · 교육행정직</span><span>3-1 전국 종합</span></div>
+ <div class="ptitle serif">교육행정 9급 · 전국</div>
+ <div class="psub">전국 교육청 합산 · <b style="color:var(--red)">총점(500점) 기준</b></div>
+ <table class="dt"><thead><tr><th>연도</th><th>선발</th><th>출원</th><th>경쟁</th><th>중앙</th></tr></thead>
+  <tbody><tr><td>2023</td><td>1,841</td><td>20,627</td><td>11.2</td><td class='cut'>425</td></tr><tr><td>2024</td><td>1,743</td><td>18,679</td><td>10.7</td><td class='cut'>430</td></tr><tr><td>2025</td><td>1,090</td><td>18,355</td><td>16.8</td><td class='cut'>455</td></tr></tbody></table>
+ <div class="trend"><div class="tt"><span>경쟁률 추이</span><b>교행 高경쟁</b></div>
+  <div class="bars">
+   <div class="bar"><div class="col" style="height:56%"><span class="v">11.2</span></div><span class="yr">2023</span></div>
+   <div class="bar"><div class="col" style="height:54%"><span class="v">10.7</span></div><span class="yr">2024</span></div>
+   <div class="bar"><div class="col" style="height:84%"><span class="v">16.8</span></div><span class="yr">2025</span></div>
+   <div class="bar future"><div class="col" style="height:55%"></div><span class="yr">2026</span></div></div></div>
+ <div class="note-box" style="margin-top:12px;"><div class="nt mono">단위 주의</div><p>교행 합격선은 <b>총점(500점 만점)</b>이라 공무원 과목평균(100점)과 직접 비교 불가.</p></div>
+ <div class="folio"><span class="src">출처: 시·도교육청 공고 · 실데이터</span><span class="pg serif">54</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 4 · 비교·분석</span><span>4-2 랭킹</span></div>
+ <div class="ptitle serif">시도 합격선 랭킹</div>
+ <div class="psub">일반행정 9급 · 2025 · 중앙값 기준</div>
+ <div class="rk-h mono">▲ 합격선 높은 시도 TOP 5</div>
+ <ul class="rank"><li><span class='pos mono' >·</span><span class='nm'>부산</span><span class='sc cut mono'>92</span><span class='mt'>단일</span></li><li><span class='pos mono' >·</span><span class='nm'>대구</span><span class='sc cut mono'>92</span><span class='mt'>단일</span></li><li><span class='pos mono' >·</span><span class='nm'>광주</span><span class='sc cut mono'>91</span><span class='mt'>단일</span></li><li><span class='pos mono' >·</span><span class='nm'>울산</span><span class='sc cut mono'>90</span><span class='mt'>단일</span></li><li><span class='pos mono' >·</span><span class='nm'>서울</span><span class='sc cut mono'>88</span><span class='mt'>단일</span></li></ul>
+ <div class="rk-h mono" style="color:var(--gold)">▼ 진입 문턱 낮은 시도</div>
+ <ul class="rank"><li><span class='pos mono' style='color:var(--gold)'>·</span><span class='nm'>충남</span><span class='sc cut mono'>76</span><span class='mt'>59~88</span></li><li><span class='pos mono' style='color:var(--gold)'>·</span><span class='nm'>강원</span><span class='sc cut mono'>76</span><span class='mt'>51~90</span></li><li><span class='pos mono' style='color:var(--gold)'>·</span><span class='nm'>인천</span><span class='sc cut mono'>74</span><span class='mt'>70~85</span></li></ul>
+ <div class="note-box" style="margin-top:12px;"><div class="nt mono">핵심 인사이트</div>
+  <p>광역시는 합격선 높고 <b>단일값</b>, 도(道)는 낮고 <b>시·군 편차 큼</b>(예: 강원 51~90). "도 지역+비인기 시군"이 전략 포인트.</p></div>
+ <div class="folio"><span class="src">상담 "지역 전략" 근거 · 실데이터</span><span class="pg serif">70</span></div></div>
+<div class="page">
+ <div class="rhead"><span class="r">PART 2 · 지방직 7급</span><span>2-1 광역시 한정</span></div>
+ <div class="ptitle serif">지방직 7급 <span style="font-size:.8rem;color:var(--gold)">서울 예시</span></div>
+ <div class="psub">2023년 · 선발 많은 순</div>
+ <table class="dt"><thead><tr><th>직렬</th><th>선발</th><th>출원</th><th>합격선</th></tr></thead>
+  <tbody><tr><td>일반행정</td><td>105</td><td>8,594</td><td class='cut'>94</td></tr><tr><td>일반행정</td><td>63</td><td>7,402</td><td class='cut'>88</td></tr><tr><td>일반행정</td><td>44</td><td>8,987</td><td class='cut'>96</td></tr><tr><td>일반토목</td><td>24</td><td>369</td><td class='cut'>68</td></tr><tr><td>건축</td><td>16</td><td>349</td><td class='cut'>71</td></tr></tbody></table>
+ <div class="note-box" style="margin-top:14px;"><div class="nt mono">데이터 한계 — 솔직 고지</div>
+  <p>7급 자료는 <b>광주, 대구, 부산, 서울, 인천 광역시만</b> 확보됨. 도(道) 지역 7급은 미보유 → 본 PART는 "주요 광역시 한정"으로 수록하거나 2판/PDF에서 보강.</p></div>
+ <div class="folio"><span class="src">※ 7급은 별도 시험(10/31) · 실데이터</span><span class="pg serif">46</span></div></div>
+</div></div></div>
+<div class="controls"><button class="nav" id="prev">‹</button><span class="counter mono" id="counter">01 / 12</span>
+<button class="nav" id="next">›</button><div class="dots" id="dots"></div>
+<div class="hint mono">← → 키보드 · 좌우 버튼으로 페이지 넘기기</div></div>
+<script>
+const BASE_W=480,BASE_H=681;const outer=document.getElementById('outer');const stage=document.getElementById('stage');
+const pages=[...document.querySelectorAll('.page')];const counter=document.getElementById('counter');const dotsWrap=document.getElementById('dots');let i=0;
+pages.forEach((_,k)=>{const d=document.createElement('div');d.className='dot'+(k===0?' on':'');d.addEventListener('click',()=>show(k));dotsWrap.appendChild(d);});
+const dots=[...dotsWrap.children];
+function fit(){const avail=outer.parentElement.clientWidth-40;let s=Math.min(1.25,avail/BASE_W);const maxH=window.innerHeight*0.76;s=Math.min(s,maxH/BASE_H);outer.style.width=(BASE_W*s)+'px';outer.style.height=(BASE_H*s)+'px';stage.style.transform='scale('+s+')';}
+function show(n){i=(n+pages.length)%pages.length;pages.forEach((p,k)=>p.classList.toggle('active',k===i));dots.forEach((d,k)=>d.classList.toggle('on',k===i));counter.textContent=String(i+1).padStart(2,'0')+' / '+String(pages.length).padStart(2,'0');}
+document.getElementById('prev').addEventListener('click',()=>show(i-1));document.getElementById('next').addEventListener('click',()=>show(i+1));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1);});
+window.addEventListener('resize',fit);fit();
+</script></body></html>
