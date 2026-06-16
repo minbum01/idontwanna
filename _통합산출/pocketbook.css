@@ -16,37 +16,43 @@
   --ff-sans :'Pretendard', 'IBM Plex Sans KR', sans-serif;  /* 본문 — Pretendard */
   --ff-mono :'Pretendard', sans-serif;                /* 숫자·라벨도 Pretendard로 통일 (정렬은 tabular-nums) */
 
-  /* ── 글자 크기 (인쇄 기준 pt) ── */
-  --fs-cover    : 34pt;   /* PART 표지 대제목 */
-  --fs-h2       : 14pt;   /* 큰 섹션 제목 */
-  --fs-h3       : 12pt;   /* 미니 섹션 제목(0-1 등) */
-  --fs-stat     : 16pt;   /* 통계 숫자 강조 */
-  --fs-folio    : 10pt;   /* 쪽번호 */
-  --fs-body     : 8.5pt;  /* 본문 */
-  --fs-table    : 8pt;    /* 표 본문 */
-  --fs-term-dt  : 8.5pt;  /* 용어 표제어 */
-  --fs-sm       : 7.8pt;  /* 작은 본문(리스트) */
-  --fs-sn       : 7.5pt;  /* 섹션 번호 */
-  --fs-term-dd  : 7.5pt;  /* 용어 설명 */
-  --fs-xs       : 7pt;    /* 라벨·주석 */
-  --fs-thead    : 7pt;    /* 표 헤더 */
-  --fs-flag     : 6.5pt;  /* 피드백 태그 */
+  /* ── 글자 크기 체계 · 6단계 래더로 통일 (인쇄 pt) ── */
+  --fs-cover    : 28pt;   /* 표지/PART 대제목 */
+  --fs-h2       : 14pt;   /* 큰 제목 */
+  --fs-h3       : 11pt;   /* 섹션 제목(0-1 등) */
+  --fs-body     : 9pt;    /* 본문 */
+  --fs-sm       : 8pt;    /* 작은 본문·리스트·표 */
+  --fs-xs       : 7pt;    /* 라벨·주석·표헤더 */
+  /* 의미별 별칭 — 전부 위 6단계 래더 참조(개별값 금지) */
+  --fs-stat     : 16pt;   /* 통계 숫자 강조(예외) */
+  --fs-folio    : 10pt;   /* 쪽번호(예외) */
+  --fs-table    : var(--fs-sm);
+  --fs-term-dt  : var(--fs-body);
+  --fs-term-dd  : var(--fs-sm);
+  --fs-sn       : var(--fs-sm);   /* 섹션 번호 */
+  --fs-thead    : var(--fs-xs);   /* 표 헤더 */
+  --fs-flag     : var(--fs-xs);   /* 피드백 태그 */
 
-  /* ── 색상 (표지 톤앤매너 = 네이비 블루 + 화이트 + 라이트블루) ── */
+  /* ── 색상 (2도: 네이비+블루) + 연노랑·연빨강 틴트 ── */
   --paper   :#eef3fb;   /* 라이트블루 카드 바탕 */
   --card    :#ffffff;   /* 페이지 흰 바탕 */
   --paper-2 :#dbe6f5;   /* 제본 무늬 */
-  --ink     :#1f2b45;   /* 네이비 잉크/헤더밴드 */
+  --ink     :#1f2b45;   /* 1도: 네이비(잉크·제목·헤더밴드) */
   --ink-soft:#3b465f;   /* 약한 본문 */
   --muted   :#7b879d;   /* 흐린 글씨 */
   --line    :#d6e0ef;   /* 괘선 */
-  --red     :#2f55a4;   /* 강조(합격선·포인트) = 해커스 블루 */
+  --red     :#2f55a4;   /* 2도: 블루 강조(합격선·포인트) */
   --red-deep:#21407f;
   --gold    :#5b7cb8;   /* 보조 블루 */
   --blue    :#2f5d8a;   /* 국가직·피드백 */
   --hk-blue :#33529e;   /* 해커스 표지 블루 */
   --th-bg   :#1f3a6b;   /* 표 헤더 짙은 파랑 */
   --th-fg   :#ffffff;   /* 표 헤더 흰 글씨 */
+  --sky     :#e6eefb;   /* 옅은 하늘색 — 섹션 타이틀 음영 */
+  --hl-y    :#fdf3d2;   /* 연노랑 — 자유/안내 강조 */
+  --hl-y-tx :#7a5a12;   /* 연노랑 위 글씨 */
+  --hl-r    :#fbe4e1;   /* 연빨강 — 제한/주의 강조 */
+  --hl-r-tx :#8a3a2f;   /* 연빨강 위 글씨 */
   --screen-bg:#2a3246;  /* 화면 배경(블루톤) */
 
   /* ── 판형·제본 (무선제본 · A5 · ~150쪽 기준) ── */
@@ -136,10 +142,14 @@ body{font-family:var(--ff-sans);color:var(--ink);background:var(--screen-bg);-we
 
 /* ───────────────────────── [섹션·텍스트] ───────────────────────── */
 /* 섹션 = 박스 (제목 줄은 색없이 가볍게, 얇은 구분선만) */
-.blk{border:var(--line-w) solid var(--line);border-radius:1.6mm;overflow:hidden;background:#fff;margin-top:4.5mm;}
+.blk{border:var(--line-w) solid var(--line);border-radius:1.6mm;overflow:hidden;background:#fff;margin-top:4.5mm;break-inside:avoid;page-break-inside:avoid;}
 .blk:first-of-type{margin-top:2.5mm;}
-.mh{display:flex;align-items:baseline;gap:2.5mm;flex-wrap:wrap;margin:0;background:#fff;color:var(--ink);padding:2.6mm 3.6mm 1.8mm;border-bottom:var(--line-w) solid var(--line);}
-.mh .n{font-family:var(--ff-mono);color:var(--red);font-weight:600;font-size:var(--fs-sn);}
+/* 직류별 하는 일처럼 박스 하나만 있는 페이지 — 박스가 나머지 공간 전부 차지 */
+.blk.fill{flex:1;display:flex;flex-direction:column;}
+.blk.fill .bd{flex:1;display:flex;flex-direction:column;}
+.blk.fill .jobwrap{flex:1;}
+.mh{display:flex;align-items:baseline;gap:2.5mm;flex-wrap:wrap;margin:0;background:var(--sky);color:var(--ink);padding:2.6mm 3.6mm 1.8mm;border-bottom:var(--line-w) solid var(--line);}
+.mh .n{font-family:var(--ff-mono);color:var(--red);font-weight:700;font-size:var(--fs-sn);}
 .mh h3{font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-h3);color:var(--ink);}
 .bd{padding:3mm 3.6mm 3.4mm;}
 .bd>p:last-child,.bd>div:last-child{margin-bottom:0;}
@@ -185,19 +195,20 @@ dl.terms{border-top:var(--line-w) solid var(--line);display:grid;grid-template-c
 .defs .d em{font-style:normal;color:var(--ink);font-weight:700;margin-right:.8mm;}
 
 /* 거주지 제한 표 (자유 지원 / 시·군 개별 제한 2색) */
-.rtab{width:100%;border-collapse:collapse;font-size:7.3pt;table-layout:fixed;}
+.rtab{width:100%;border-collapse:collapse;font-size:var(--fs-xs);table-layout:fixed;}
 .rtab col.c-sido{width:13mm;} .rtab col.c-free{width:35mm;}
-.rtab th{color:#fff;font-weight:600;font-size:6.8pt;padding:1.7mm 2mm;text-align:left;vertical-align:middle;letter-spacing:.01em;}
+.rtab th{color:var(--th-fg);font-weight:600;font-size:var(--fs-thead);padding:1.7mm 2mm;text-align:left;vertical-align:middle;letter-spacing:.01em;}
+/* 2도(네이비) 헤더 + 셀 틴트로 구분: 자유=라이트블루 / 제한=연빨강 */
 .rtab th.h-sido{background:var(--ink);}
-.rtab th.h-free{background:var(--red);}        /* 자유 지원 = 브랜드 블루 */
-.rtab th.h-rest{background:#b45309;}           /* 개별 제한 = 앰버(경고) */
-.rtab td{padding:1.7mm 2mm;border-bottom:.3mm solid #e7e0d2;vertical-align:top;line-height:1.45;}
+.rtab th.h-free{background:var(--ink);}
+.rtab th.h-rest{background:var(--ink);}
+.rtab td{padding:1.7mm 2mm;border-bottom:.3mm solid var(--line);vertical-align:top;line-height:1.45;}
 .rtab td.sido{font-family:var(--ff-sans);font-weight:700;color:var(--ink);white-space:nowrap;background:#eef2f8;}
-.rtab td.free{color:#21407f;background:#eef3fb;}
-.rtab td.rest{color:#8a5410;background:#fbf3e6;font-weight:500;}
-.rtab td.none{color:var(--muted);background:#fbfbfa;font-weight:400;font-style:italic;}
+.rtab td.free{color:var(--red-deep);background:var(--paper);}          /* 자유 = 라이트블루(2도) */
+.rtab td.rest{color:var(--hl-r-tx);background:var(--hl-r);font-weight:600;}  /* 제한 = 연빨강 */
+.rtab td.none{color:var(--hl-y-tx);background:var(--hl-y);font-weight:400;}   /* 없음/예외 = 연노랑 */
 .rtab tr:last-child td{border-bottom:none;}
-.rtab td.allfree{background:#e8f0fb;color:#21407f;}
+.rtab td.allfree{background:var(--hl-y);color:var(--hl-y-tx);}        /* 그 외 묶음 = 연노랑 안내 */
 
 /* 직렬 예외 리스트 */
 .exlist{list-style:none;}
@@ -246,9 +257,26 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .chg th{background:var(--th-bg);color:var(--th-fg);font-weight:600;font-size:var(--fs-thead);padding:1.8mm 2.4mm;text-align:left;}
 .chg td{padding:1.9mm 2.4mm;border-bottom:var(--line-w) solid var(--line);color:var(--ink-soft);vertical-align:top;line-height:1.5;}
 .chg td:first-child{font-family:var(--ff-sans);font-weight:700;color:var(--ink);white-space:nowrap;}
+/* 셀 안 줄 구분선(2025년처럼 항목이 두 줄일 때) */
+.chg .row2{display:block;padding-top:1mm;margin-top:1mm;border-top:var(--line-w) solid var(--line);}
+.chg .hl{color:var(--ink);font-weight:700;}  /* 일반 강조 */
+.chg .hl2{color:var(--red-deep);font-weight:700;} /* 특별 강조(출제기조·한능검) */
+.chg tfoot td{font-size:var(--fs-xs);color:var(--muted);padding:1.4mm 2.4mm;border-top:var(--line-w) solid var(--line);}
 /* 행수 많은 표용 콤팩트 변형 */
 .chg.compact td{padding:1.3mm 2mm;font-size:6.9pt;line-height:1.4;}
 .chg.compact th{padding:1.4mm 2mm;font-size:6.6pt;}
+.chg .ans{color:var(--red-deep);font-weight:700;}   /* 정답·핵심 강조 */
+
+/* 전문가 서술형 본문 (필수정보 등) — 장식 최소화, 산문 위주 */
+.prose p{font-size:var(--fs-body);line-height:1.72;color:var(--ink-soft);margin:0 0 2.6mm;text-align:justify;word-break:keep-all;}
+.prose p:last-child{margin-bottom:0;}
+.prose strong,.prose b{color:var(--ink);font-weight:700;}
+.prose .em{color:var(--red-deep);font-weight:700;}
+.prose h4{font-size:var(--fs-body);font-weight:800;color:var(--ink);margin:3.4mm 0 1.2mm;}
+.prose h4 .q{font-weight:500;color:var(--muted);font-size:var(--fs-sm);}
+.prose .tbcap{font-size:var(--fs-sm);font-weight:700;color:var(--ink);margin:3.2mm 0 1.4mm;}
+.prose table{margin-bottom:1mm;}
+.prose .note{font-size:var(--fs-xs);color:var(--muted);margin-top:1.2mm;line-height:1.55;}
 
 /* 요건 리스트(live) */
 .live{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 4mm;margin-top:1mm;}
@@ -323,6 +351,15 @@ body:not(.show-fb) .q{color:var(--ink-soft);font-weight:400;}
 body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
 .fb-dot{position:absolute;top:5mm;right:7mm;background:var(--red);color:#fff;font-family:var(--ff-mono);font-size:var(--fs-flag);font-weight:700;padding:.6mm 2mm;border-radius:3mm;}
 
+/* 글씨 인스펙터 — 피드백 보기 ON에서 텍스트에 마우스 올리면 글씨 정보 툴팁 */
+#typtip{position:fixed;z-index:9999;display:none;pointer-events:none;
+  background:#1f2127;color:#f3eee2;font-family:var(--ff-mono);font-size:11px;line-height:1.5;
+  padding:5px 9px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.4);white-space:nowrap;}
+#typtip b{color:#ffd479;font-weight:700;}
+#typtip .tg{color:#8fb7e6;margin-left:6px;}
+/* 피드백 보기 ON: 텍스트 요소에 마우스를 올리면 점선 강조(인스펙터 가능 표시) */
+body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline:.3mm dashed rgba(47,85,164,.5);outline-offset:.4mm;}
+
 /* ───────────────────────── [자주하는 질문 / 직류별 설명] ───────────────────────── */
 .faq .qa{padding:5mm 0;border-bottom:.3mm solid var(--line);}
 .faq .qa:first-child{padding-top:1.5mm;}
@@ -334,12 +371,31 @@ body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
 .faq .a::before{content:"↳";position:absolute;left:.8mm;top:0;color:var(--red);font-weight:800;font-size:9pt;line-height:1.3;}
 .faq .a .lead{font-weight:700;color:var(--red-deep);}
 
-.jobwrap{display:grid;grid-template-columns:1fr 1fr;gap:0 5mm;}
-.jobcol .ct{font-family:var(--ff-serif);font-size:var(--fs-sm);font-weight:700;color:var(--red);padding-bottom:1mm;margin-bottom:.4mm;border-bottom:.4mm solid var(--line);}
-.jobcol .j{padding:.85mm 0;border-bottom:.3mm solid var(--line);font-size:6.5pt;line-height:1.3;color:var(--ink-soft);}
-.jobcol .j:last-child{border-bottom:none;}
-.jobcol .j b{color:var(--red-deep);font-weight:700;}
-.jobcol .j i{font-style:normal;font-family:var(--ff-mono);font-size:5.8pt;color:var(--muted);margin-left:.5mm;}
+.jobwrap{display:flex;flex-direction:column;gap:0;}
+/* 직군 배지 — .mh 안에 삽입 */
+.mh .job-badge{display:inline-flex;align-items:center;background:var(--ink);color:#fff;
+  font-family:var(--ff-mono);font-size:var(--fs-xs);font-weight:700;
+  padding:.8mm 2.8mm;border-radius:2mm;letter-spacing:.06em;margin-left:1mm;}
+/* 직류명 | 설명 = 보이지 않는 표(열 정렬). 직류명 고정폭 왼쪽 열, 설명은 오른쪽 열에 들여써짐 */
+.jobsec .j b{display:inline-block;vertical-align:top;color:var(--red-deep);font-weight:700;}
+/* 행정직군 — 1열, 위로 모아 정렬(직류명 29mm 열) */
+.jobsec.admin .jlist{display:block;}
+.jobsec.admin .j{padding:1.1mm 0 1.1mm 29mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);line-height:1.45;color:var(--ink-soft);}
+.jobsec.admin .j b{width:29mm;margin-left:-29mm;padding-right:2mm;}
+/* 기술직군 — 2열, 소그룹 헤더 포함(직류명 15mm 열) */
+.jobsec.tech .jlist{display:grid;grid-template-columns:1fr 1fr;gap:0 5mm;}
+.jobsec.tech .j{padding:.9mm 0 .9mm 15mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);line-height:1.35;color:var(--ink-soft);}
+.jobsec.tech .j b{width:15mm;margin-left:-15mm;padding-right:1.5mm;}
+.jobsec.tech .j.nobr{border-bottom:none;}   /* 소그룹 끝 항목 밑줄 제거 */
+/* 소그룹 헤더 — 두 열 전체 스팬, 배지는 내용 너비만큼만 */
+.jobsec.tech .jcat{grid-column:1/-1;margin-top:3mm;padding-top:2.4mm;border-top:.3mm solid var(--line);}
+.jobsec.tech .jcat:first-child{margin-top:0;padding-top:0;border-top:none;}
+.jobsec.tech .jcat span{display:inline-block;background:var(--paper);border:var(--line-w) solid var(--line);
+  font-size:var(--fs-xs);font-weight:700;color:var(--ink);letter-spacing:.05em;
+  padding:.5mm 2.2mm;border-radius:1mm;}
+/* 공통 */
+.jobsec .j:last-child{border-bottom:none;}
+.jobsec .j i{font-style:normal;font-family:var(--ff-mono);font-size:var(--fs-xs);color:var(--muted);margin-left:.4mm;}
 
 /* ───────────────────────── [도비라(속표지) · 목차 · 간지] ───────────────────────── */
 /* ── 도비라 / 속표지 ── */
@@ -475,3 +531,39 @@ body.show-fb .page.hasfb{box-shadow:inset 0 0 0 1mm rgba(178,58,46,.22);}
   .page.ifc,.page.pad{display:none !important;}   /* 화면 전용 공백(표지 안쪽·짝맞춤)은 인쇄 제외 */
   .fb{display:none !important;}
 }
+
+/* ===== PRINT: A5 single pages (154x216mm incl. 3mm bleed) ===== */
+@page{size:154mm 216mm;margin:0;}
+@media print{
+  body{background:#fff;}
+  .toolbar{display:none !important;}
+  .fitwrap{overflow:visible;height:auto !important;}
+  .deck{transform:none !important;height:auto !important;display:block;gap:0;padding:0;margin:0;width:auto;}
+  .spread{display:block;box-shadow:none !important;}
+  .page{page-break-after:always;box-shadow:none !important;break-inside:avoid;}
+  .page:last-child{page-break-after:auto;}
+  .page.ifc,.page.pad{display:none !important;}
+  .fb{display:none !important;}
+}
+
+/* ===== 간단한 기본 리스트 (인포그래픽 대체) ===== */
+.plist{list-style:none;margin:1.5mm 0;}
+.plist>li{font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.5;padding:1mm 0 1mm 3.6mm;position:relative;}
+.plist>li::before{content:"–";position:absolute;left:0;color:var(--muted);}
+.plist>li b{color:var(--ink);font-weight:700;}
+.plist.tight>li{padding:.6mm 0 .6mm 3.6mm;}
+
+/* ── 표제어 정렬 그리드 .tg ── 글만 있는 목록을 '표처럼' 줄맞춤
+   좌: 표제어(네이비, 한 열로 정렬) / 우: 설명. 행마다 얇은 구분선(세로선 없이 가볍게). */
+.tg{display:grid;grid-template-columns:max-content 1fr;column-gap:3.4mm;margin:1.6mm 0 .4mm;}
+.tg>dt,.tg>dd{padding:1.3mm 0;border-top:.3mm solid var(--line);line-height:1.5;min-width:0;align-self:start;}
+.tg>dt:nth-of-type(1),.tg>dd:nth-of-type(1){border-top:none;}   /* 첫 행 윗선 제거 */
+.tg>dt{font-weight:700;color:var(--ink);font-size:var(--fs-sm);white-space:nowrap;}   /* 표제어는 한 줄 고정(자동 너비) */
+.tg>dt .tw{display:block;font-size:var(--fs-xs);color:var(--red);font-weight:600;margin-top:.4mm;}  /* 시점 등 보조라벨 */
+.tg>dd{font-size:var(--fs-sm);color:var(--ink-soft);}
+.tg>dd b,.tg>dd strong{color:var(--ink);font-weight:700;}
+.tg>dd .ex{color:var(--muted);white-space:nowrap;}
+.tg>dd .ex.wrap{white-space:normal;}
+/* 예시 블록 — 설명 아래에 들여쓰기로 정렬 */
+.tg>dd .dd-ex{display:block;margin-top:.9mm;padding:.8mm 2mm .8mm 2.6mm;border-left:1.2mm solid var(--line);background:var(--paper);border-radius:0 1mm 1mm 0;font-size:var(--fs-xs);color:var(--muted);line-height:1.6;}
+.tg>dd .dd-ex strong{color:var(--ink);}
