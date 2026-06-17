@@ -147,10 +147,16 @@ body{font-family:var(--ff-sans);color:var(--ink);background:var(--screen-bg);-we
 /* 직류별 하는 일처럼 박스 하나만 있는 페이지 — 박스가 나머지 공간 전부 차지 */
 .blk.fill{flex:1;display:flex;flex-direction:column;}
 .blk.fill .bd{flex:1;display:flex;flex-direction:column;}
-.blk.fill .jobwrap{flex:1;}
+.blk.fill .jobwrap{flex:1;display:flex;flex-direction:column;}
+.blk.fill .jobsec{flex:1;display:flex;flex-direction:column;}
 .mh{display:flex;align-items:baseline;gap:2.5mm;flex-wrap:wrap;margin:0;background:var(--sky);color:var(--ink);padding:2.6mm 3.6mm 1.8mm;border-bottom:var(--line-w) solid var(--line);}
 .mh .n{font-family:var(--ff-mono);color:var(--red);font-weight:700;font-size:var(--fs-sn);}
 .mh h3{font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-h3);color:var(--ink);}
+/* 타이틀 우측 공통과목 안내 */
+.mh .ct-sub{margin-left:auto;align-self:center;text-align:right;font-size:6.6pt;color:var(--muted);line-height:1.45;font-weight:400;}
+.mh .ct-sub b{color:var(--ink);font-weight:700;margin-right:.4mm;}
+.mh .ct-sub .ps{color:var(--red);font-weight:700;}
+.mh .ct-sub .nt{display:block;font-size:6.1pt;color:var(--gold);}
 .bd{padding:3mm 3.6mm 3.4mm;}
 .bd>p:last-child,.bd>div:last-child{margin-bottom:0;}
 .mh h3{font-family:var(--ff-serif);font-weight:800;font-size:var(--fs-h3);}
@@ -278,6 +284,33 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .prose table{margin-bottom:1mm;}
 .prose .note{font-size:var(--fs-xs);color:var(--muted);margin-top:1.2mm;line-height:1.55;}
 
+/* ── 차트(2도 CSS/SVG, 인쇄용) ── */
+.trendchart{margin:1mm 1mm 4mm;}
+.trendchart .chtitle{font-size:var(--fs-body);font-weight:700;color:var(--ink);text-align:center;margin-bottom:2mm;}
+.trendchart .chtitle b{font-weight:800;}
+.trendchart svg{padding:0 1mm;}
+.trendchart svg{width:100%;height:auto;display:block;}
+.trendchart .lg{display:flex;gap:6mm;justify-content:center;margin-top:-1.5mm;font-size:var(--fs-xs);color:var(--muted);}
+.trendchart .lg span{display:inline-flex;align-items:center;gap:1.4mm;}
+.trendchart .lg .swb{width:3.4mm;height:2.4mm;background:#cdddf3;border:.25mm solid #7da3d6;border-radius:.4mm;}
+.trendchart .lg .swl{width:4mm;height:0;border-top:.6mm solid var(--red);position:relative;}
+.trendchart .lg .swl::after{content:"";position:absolute;left:1.3mm;top:-1mm;width:1.6mm;height:1.6mm;border-radius:50%;background:var(--red);}
+/* 직렬별 가로 막대(선발) + 합격선 */
+.hbars{margin-top:2mm;display:flex;flex-direction:column;gap:1.5mm;}
+.hbars .hb{display:grid;grid-template-columns:20mm 1fr auto;align-items:center;gap:2mm;font-size:8pt;line-height:1.2;}
+.hbars .hb .nm{color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hbars .hb .tr{height:3.6mm;background:var(--paper);border-radius:.6mm;overflow:hidden;}
+.hbars .hb .br{height:100%;background:linear-gradient(90deg,#9fc0e8,#2f5d8a);border-radius:.6mm;min-width:.6mm;}
+.hbars .hb .vl{font-family:var(--ff-mono);color:var(--ink-soft);white-space:nowrap;font-size:7.2pt;}
+.hbars .hb .vl b{color:var(--ink);}
+.hbars .hb .cut{color:var(--red-deep);font-weight:700;}
+.hbars .cap{font-size:var(--fs-xs);color:var(--muted);margin-top:2mm;line-height:1.5;}
+/* 규모 그룹 헤더 */
+.hbars .hgrp{display:flex;align-items:baseline;gap:1.6mm;margin:3mm 0 1mm;padding-bottom:.7mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
+.hbars .hgrp:first-child{margin-top:0;}
+.hbars .hgrp::before{content:"▸";color:var(--red);font-weight:700;}
+.hbars .hgrp .rg{font-size:6.6pt;font-weight:400;color:var(--muted);}
+
 /* 요건 리스트(live) */
 .live{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 4mm;margin-top:1mm;}
 .live .l{display:flex;gap:2mm;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.35;}
@@ -378,10 +411,24 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
   padding:.8mm 2.8mm;border-radius:2mm;letter-spacing:.06em;margin-left:1mm;}
 /* 직류명 | 설명 = 보이지 않는 표(열 정렬). 직류명 고정폭 왼쪽 열, 설명은 오른쪽 열에 들여써짐 */
 .jobsec .j b{display:inline-block;vertical-align:top;color:var(--red-deep);font-weight:700;}
-/* 행정직군 — 1열, 위로 모아 정렬(직류명 29mm 열) */
+/* 직류별 — UI06 차용: ▍직류명 + 하는 일 / 〔급수〕 과목 (선 없음, 직류명 아래 정렬) */
 .jobsec.admin .jlist{display:block;}
-.jobsec.admin .j{padding:1.1mm 0 1.1mm 29mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);line-height:1.45;color:var(--ink-soft);}
-.jobsec.admin .j b{width:29mm;margin-left:-29mm;padding-right:2mm;}
+.jobsec.admin .j{position:relative;padding:2.1mm 0 2.3mm 4mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);line-height:1.45;color:var(--ink-soft);}
+.jobsec.admin .j:last-child{border-bottom:none;}
+.jobsec.admin .j::before{content:"▍";position:absolute;left:0;top:2.1mm;color:var(--red);font-weight:700;}
+.jobsec.admin .j b{display:inline;width:auto;margin:0 1.6mm 0 0;padding:0;color:var(--ink);font-weight:700;}
+/* 과목 행 — 직류명 아래 정렬(들여쓰기 없음), 구분선 없음 */
+.jobsec .j .sj{display:block;width:auto;margin:.9mm 0 0;padding:0;border:none;font-size:7.5pt;color:var(--ink);line-height:1.4;}
+.jobsec .j .sj .lv{font-family:var(--ff-mono);font-weight:700;color:var(--red);font-size:6.8pt;margin-right:1.4mm;}
+.jobsec .j .sj .lv::before{content:"〔";}
+.jobsec .j .sj .lv::after{content:"〕";}
+.jobsec .j .sj .lv.lv2{margin-left:5mm;}
+.jobsec .j .sj .none{color:var(--muted);font-weight:400;}
+.jobsec .j .sj .lic{color:var(--muted);font-size:6.8pt;}
+/* 기술직군 — 여백 축소(13개 전체 수용) */
+.jobsec.tight .j{padding-top:1.2mm;padding-bottom:1.4mm;}
+.jobsec.tight .j::before{top:1.2mm;}
+.jobsec.tight .j .sj{margin-top:.6mm;}   /* 면허 등 비고 */
 /* 기술직군 — 2열, 소그룹 헤더 포함(직류명 15mm 열) */
 .jobsec.tech .jlist{display:grid;grid-template-columns:1fr 1fr;gap:0 5mm;}
 .jobsec.tech .j{padding:.9mm 0 .9mm 15mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);line-height:1.35;color:var(--ink-soft);}
