@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선발규모 막대(로그)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:148mm 210mm;margin:0}
+html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+@media screen{
+  body{background:#dcdce0;padding:26px;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+  .page{box-shadow:0 10px 40px rgba(0,0,0,.22)}
+}
+.page{width:148mm;height:210mm;overflow:hidden;position:relative;background:#fff}
+
+.page{font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;color:#11201d;padding:14mm 13mm 11mm;background:#fafbf9}
+.hd{margin-bottom:10px}
+.eyebrow{font-size:8.5pt;letter-spacing:.3em;color:#0d9488;font-weight:800}
+.ttl{font-size:19pt;font-weight:800;letter-spacing:-.01em;margin-top:4px}
+.sub{font-size:8.5pt;color:#7c8a86;margin-top:3px}
+.row{display:flex;align-items:center;padding:3.5px 0;border-bottom:.5pt solid #e7ece9}
+.row:last-child{border-bottom:none}
+.lbl{width:94px;flex:none;display:flex;align-items:center;gap:6px}
+.rk{width:16px;flex:none;text-align:right;font-size:7.5pt;font-weight:800;color:#b3c1bc}
+.nm{font-size:9.3pt;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{flex:1;margin:0 10px;position:relative;height:15px}
+.gl{position:absolute;top:-1px;bottom:-1px;width:1px;background:#dfece8}
+.bar{position:absolute;left:0;top:0;bottom:0;border-radius:3.5px;min-width:24px;
+  background:linear-gradient(90deg,#5eead4,#0f766e);
+  display:flex;align-items:center;justify-content:flex-end;
+  box-shadow:0 1px 1px rgba(13,118,136,.18)}
+.cnt{color:#fff;font-size:7.2pt;font-weight:800;padding-right:5px;
+  font-variant-numeric:tabular-nums;text-shadow:0 0 2px rgba(8,50,46,.35)}
+.cut{width:34px;flex:none;text-align:right;font-size:11pt;font-weight:800;
+  color:#0f3b36;font-variant-numeric:tabular-nums}
+.axis{border-bottom:1pt solid #cfdad6;padding-bottom:4px;margin-bottom:2px}
+.axis .lbl{font-size:7.5pt;color:#9aa8a3;font-weight:700;letter-spacing:.04em}
+.axis .track{height:11px}
+.tk{position:absolute;top:0;transform:translateX(-50%);font-size:6.6pt;
+  color:#9aa8a3;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.axis .cut{font-size:7.5pt;color:#9aa8a3;font-weight:700}
+.foot{position:absolute;left:13mm;right:13mm;bottom:8mm;font-size:7.5pt;color:#9aa8a3;
+  border-top:.5pt solid #e7ece9;padding-top:5px;display:flex;justify-content:space-between}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hd">
+  <div class="eyebrow">20○○ 국가직 9급</div>
+  <div class="ttl">직렬별 선발규모 &amp; 합격선</div>
+  <div class="sub">막대 = 선발인원 · <b>로그 스케일</b> · 총 2,827명 / 17개 직렬</div>
+</div>
+<div class="row axis"><div class="lbl">직렬</div>
+  <div class="track"><span class="tk" style="left:15.0%">10</span><span class="tk" style="left:34.9%">30</span><span class="tk" style="left:56.8%">100</span><span class="tk" style="left:76.7%">300</span><span class="tk" style="left:98.6%">1,000</span></div><div class="cut">합격선</div></div>
+<div class="row"><div class="lbl"><span class="rk">1</span><span class="nm">①직렬명</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:100.0%"><span class="cnt">1,080</span></div></div><div class="cut">77</div></div><div class="row"><div class="lbl"><span class="rk">2</span><span class="nm">고용노동</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:87.6%"><span class="cnt">546</span></div></div><div class="cut">79</div></div><div class="row"><div class="lbl"><span class="rk">3</span><span class="nm">일반행정</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:74.5%"><span class="cnt">265</span></div></div><div class="cut">90</div></div><div class="row"><div class="lbl"><span class="rk">4</span><span class="nm">교정(남)</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:70.4%"><span class="cnt">212</span></div></div><div class="cut">82</div></div><div class="row"><div class="lbl"><span class="rk">5</span><span class="nm">관세</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:67.2%"><span class="cnt">177</span></div></div><div class="cut">85</div></div><div class="row"><div class="lbl"><span class="rk">6</span><span class="nm">검찰</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:60.0%"><span class="cnt">119</span></div></div><div class="cut">91</div></div><div class="row"><div class="lbl"><span class="rk">7</span><span class="nm">통계</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:54.3%"><span class="cnt">87</span></div></div><div class="cut">89</div></div><div class="row"><div class="lbl"><span class="rk">8</span><span class="nm">경찰청</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:50.3%"><span class="cnt">70</span></div></div><div class="cut">90</div></div><div class="row"><div class="lbl"><span class="rk">9</span><span class="nm">보호(남)</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:47.5%"><span class="cnt">60</span></div></div><div class="cut">78</div></div><div class="row"><div class="lbl"><span class="rk">10</span><span class="nm">직업상담</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:44.9%"><span class="cnt">52</span></div></div><div class="cut">79</div></div><div class="row"><div class="lbl"><span class="rk">11</span><span class="nm">교정(여)</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:34.3%"><span class="cnt">29</span></div></div><div class="cut">87</div></div><div class="row"><div class="lbl"><span class="rk">12</span><span class="nm">출입국관리</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:34.3%"><span class="cnt">29</span></div></div><div class="cut">90</div></div><div class="row"><div class="lbl"><span class="rk">13</span><span class="nm">선거행정</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:33.7%"><span class="cnt">28</span></div></div><div class="cut">89</div></div><div class="row"><div class="lbl"><span class="rk">14</span><span class="nm">보호(여)</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:33.0%"><span class="cnt">27</span></div></div><div class="cut">78</div></div><div class="row"><div class="lbl"><span class="rk">15</span><span class="nm">교육행정</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:28.5%"><span class="cnt">21</span></div></div><div class="cut">96</div></div><div class="row"><div class="lbl"><span class="rk">16</span><span class="nm">마약수사</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:22.4%"><span class="cnt">15</span></div></div><div class="cut">89</div></div><div class="row"><div class="lbl"><span class="rk">17</span><span class="nm">철도경찰</span></div><div class="track"><span class="gl" style="left:15.0%"></span><span class="gl" style="left:34.9%"></span><span class="gl" style="left:56.8%"></span><span class="gl" style="left:76.7%"></span><span class="gl" style="left:98.6%"></span><div class="bar" style="width:15.0%"><span class="cnt">10</span></div></div><div class="cut">89</div></div>
+<div class="foot"><span>단위: 명 / 점 · 막대 길이는 로그 척도(눈금 10·30·100·300·1000명)</span><span>Hackers</span></div>
+
+</div>
+</body>
+</html>

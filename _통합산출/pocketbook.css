@@ -217,9 +217,15 @@ dl.terms{border-top:var(--line-w) solid var(--line);display:grid;grid-template-c
 .rtab td.none{color:var(--muted);background:#fbfcfe;font-weight:400;}     /* 없음/예외 = 흰 바탕 */
 .rtab tr:last-child td{border-bottom:none;}
 .rtab td.allfree{background:var(--paper);color:var(--red-deep);}      /* 그 외 묶음 = 라이트블루 안내 */
-/* 최근연도(2026) 별색 — 연파랑 */
-td.yhi,th.yhi{background:var(--hl-b) !important;}
-.dcard table .yhi{color:var(--hl-b-tx);}
+/* 최근연도(2026) 별색 — 사방 파란 박스 + 진한 파랑 헤더 + 굵은 블루 데이터 */
+.yhi{border-left:1.5px solid var(--red) !important;border-right:1.5px solid var(--red) !important;}
+th.yhi{background:var(--red) !important;color:#fff !important;font-weight:800 !important;border-top:1.5px solid var(--red) !important;}
+td.yhi{font-weight:800 !important;color:var(--red-deep) !important;}
+tbody tr:last-child td.yhi{border-bottom:1.5px solid var(--red) !important;}
+/* 직류별 카드(dcard)는 박스 대신 은은하게 — 헤더만 옅은 파랑, 데이터는 굵은 블루 */
+.dcard .yhi{border:none !important;box-shadow:none !important;}
+.dcard th.yhi{background:var(--hl-b) !important;color:var(--ink) !important;}
+.dcard td.yhi{background:transparent !important;color:var(--red-deep) !important;font-weight:700 !important;}
 
 /* 직렬 예외 리스트 */
 .exlist{list-style:none;}
@@ -310,6 +316,17 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .hbars .hb .vl b{color:var(--ink);}
 .hbars .hb .cut{color:var(--red-deep);font-weight:700;}
 .hbars .cap{font-size:var(--fs-xs);color:var(--muted);margin-top:2mm;line-height:1.5;}
+/* 직렬별 선발 — 숫자 카드 그리드(선발 많은순) */
+.selgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:2.2mm;margin-top:2.5mm;}
+.selgrid .sc{position:relative;border:.3mm solid var(--line);border-radius:1.8mm;padding:2mm 1mm 1.8mm;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.5mm;background:#fff;}
+.selgrid .sc .nm{font-size:7pt;font-weight:700;color:var(--ink);line-height:1.05;word-break:keep-all;}
+.selgrid .sc .v{font-family:var(--ff-mono);font-size:13pt;font-weight:800;color:var(--red-deep);line-height:1;letter-spacing:-.02em;}
+.selgrid .sc .u{font-size:5.6pt;color:var(--muted);margin-top:-.3mm;}
+.selgrid .sc .c{font-size:6.4pt;color:var(--muted);}
+.selgrid .sc .c b{color:var(--red);font-weight:700;}
+.selgrid .sc .rk{position:absolute;top:.8mm;left:1.2mm;font-family:var(--ff-mono);font-size:5.6pt;font-weight:700;color:var(--muted);}
+.selgrid .sc.big{background:var(--hl-b);border-color:var(--gold);}
+.selcap{font-size:var(--fs-xs);color:var(--muted);margin-top:2.5mm;line-height:1.5;}
 /* 규모 그룹 헤더 */
 .hbars .hgrp{display:flex;align-items:baseline;gap:1.6mm;margin:3mm 0 1mm;padding-bottom:.7mm;border-bottom:.3mm solid var(--line);font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
 .hbars .hgrp:first-child{margin-top:0;}
