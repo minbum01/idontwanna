@@ -371,7 +371,7 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun{font-size:5.9pt;}
 .extab.mtx.idx.sgun th,.extab.mtx.idx.sgun td{padding:.42mm .28mm;}
 .extab.mtx.idx.sgun td.sd{text-align:left;font-family:var(--ff-sans);font-weight:600;color:var(--muted);font-size:5.4pt;}
-.extab.mtx.idx.sgun td.gw{text-align:left;font-family:var(--ff-sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:13mm;}
+.extab.mtx.idx.sgun td.gw{text-align:left;font-family:var(--ff-sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16mm;}
 .extab.mtx.idx.sgun tbody tr:nth-child(even) td{background:#f6f8fc;}
 .extab.mtx.idx.sgun .spc{background:#fff !important;}
 
