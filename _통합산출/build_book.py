@@ -82,6 +82,12 @@ for f in PARTS:
         for pg in extract_divs(sp, 'page'):
             pages.append(pg)
 
+# ── folio(쪽번호) 자동 재부여: 물리 페이지 순서대로 1..N ──
+for idx in range(len(pages)):
+    n = idx + 1
+    pages[idx] = re.sub(r'(<span class="pg serif">)[^<]*(</span>)',
+                        lambda m, n=n: m.group(1) + str(n) + m.group(2), pages[idx], count=1)
+
 # ── 연속 흐름 페이지네이션 ──
 # 표지=1쪽(홀=recto=오른쪽). 이후 자연스럽게 좌우 교대(짝=verso 왼쪽 / 홀=recto 오른쪽).
 # 별도 강제 공백 없음 → 파트 간지는 왼쪽(verso), 본문 첫 쪽은 바로 오른쪽(recto)에서 마주봄.

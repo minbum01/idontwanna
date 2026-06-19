@@ -362,6 +362,11 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx td{font-family:var(--ff-mono);font-variant-numeric:tabular-nums;color:var(--ink);}
 .extab.mtx td:first-child{font-family:var(--ff-sans);font-weight:600;color:var(--ink);}
 .extab.mtx tbody tr:nth-child(even) td{background:#f6f8fc;}
+/* 합격선 색인(직렬별 시·도×연도 · 2단 배치) */
+.extab.mtx.idx{font-size:6.6pt;margin:0 0 .5mm;}
+.extab.mtx.idx th,.extab.mtx.idx td{padding:.62mm .35mm;}
+.extab.mtx.idx .spc{background:#fff !important;border:none !important;width:2mm;}
+.idxttl{font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-sm);color:var(--ink);margin:.4mm 0 .6mm;border-left:2mm solid var(--hl-b);padding-left:2mm;}
 
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
