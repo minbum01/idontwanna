@@ -333,6 +333,34 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .hbars .hgrp::before{content:"▸";color:var(--red);font-weight:700;}
 .hbars .hgrp .rg{font-size:6.6pt;font-weight:400;color:var(--muted);}
 
+/* 로그 스케일 가로막대 (직렬별 선발규모 + 합격선) */
+.lbars{margin-top:2.2mm;display:flex;flex-direction:column;}
+.lbars .lr{display:flex;align-items:center;padding:.95mm 0;border-bottom:.3mm solid var(--line);}
+.lbars .lr:last-child{border-bottom:none;}
+.lbars .lbl{width:23mm;flex:none;display:flex;align-items:center;gap:1.4mm;}
+.lbars .rk{width:4mm;flex:none;text-align:right;font-family:var(--ff-mono);font-size:6.4pt;font-weight:700;color:var(--muted);}
+.lbars .nm{font-size:8pt;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lbars .track{flex:1;position:relative;height:3.9mm;margin:0 6mm 0 2.4mm;}
+.lbars .gl{position:absolute;top:-.5mm;bottom:-.5mm;width:.2mm;background:var(--hl-b);}
+.lbars .bar{position:absolute;left:0;top:0;bottom:0;border-radius:.8mm;min-width:2.2mm;
+  background:linear-gradient(90deg,#9fc0e8,#1f3a6e);
+  box-shadow:0 .2mm .3mm rgba(31,58,110,.18);}
+.lbars .cnt{position:absolute;top:50%;transform:translateY(-50%);margin-left:1.5mm;white-space:nowrap;
+  font-family:var(--ff-mono);font-size:7pt;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+.lbars .cnt .u{font-size:5.6pt;font-weight:600;color:var(--muted);margin-left:.3mm;}
+.lbars .cut{width:9mm;flex:none;text-align:right;padding-left:1.5mm;font-family:var(--ff-mono);font-size:9.5pt;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;}
+.lbars .lr.axis{border-bottom:.4mm solid var(--line);padding-bottom:.9mm;margin-bottom:.5mm;align-items:flex-end;}
+.lbars .lr.axis .track{height:3mm;}
+.lbars .lr.axis .tk{position:absolute;top:0;transform:translateX(-50%);font-size:5.6pt;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.lbars .lr.axis .lbl,.lbars .lr.axis .cut{font-size:5.8pt;color:var(--muted);font-weight:700;letter-spacing:.02em;}
+.lbars .lcap{font-size:var(--fs-xs);color:var(--muted);margin-top:2.2mm;line-height:1.5;}
+.lbars .lcap b{color:var(--ink);font-weight:700;}
+
+/* extab 보조: 2차컷 강조 · 합계행 */
+.extab td.cv{color:var(--hl-b-tx);font-weight:700;}
+.extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
+.extab tr.totr td b{color:var(--ink);}
+
 /* 요건 리스트(live) */
 .live{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 4mm;margin-top:1mm;}
 .live .l{display:flex;gap:2mm;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.35;}
