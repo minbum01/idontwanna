@@ -356,6 +356,13 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .lbars .lcap{font-size:var(--fs-xs);color:var(--muted);margin-top:2.2mm;line-height:1.5;}
 .lbars .lcap b{color:var(--ink);font-weight:700;}
 
+/* 매트릭스 표(시·도×직렬) */
+.extab.mtx th,.extab.mtx td{text-align:center;padding:1.3mm .6mm;}
+.extab.mtx th:first-child,.extab.mtx td:first-child{text-align:left;padding-left:1.6mm;}
+.extab.mtx td{font-family:var(--ff-mono);font-variant-numeric:tabular-nums;color:var(--ink);}
+.extab.mtx td:first-child{font-family:var(--ff-sans);font-weight:600;color:var(--ink);}
+.extab.mtx tbody tr:nth-child(even) td{background:#f6f8fc;}
+
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
 .extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
