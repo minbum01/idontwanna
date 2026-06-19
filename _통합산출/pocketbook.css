@@ -374,6 +374,15 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun td.gw{text-align:left;font-family:var(--ff-sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16mm;}
 .extab.mtx.idx.sgun tbody tr:nth-child(even) td{background:#f6f8fc;}
 .extab.mtx.idx.sgun .spc{background:#fff !important;}
+.extab.mtx.idx.sgun.sg2{font-size:5.6pt;}
+.extab.mtx.idx.sgun.sg2 .se{color:var(--muted);font-weight:400;}
+.extab.mtx.idx.sgun.sg2 .ct{color:var(--ink);font-weight:700;}
+.extab.mtx.idx.sgun .sc{font-weight:400;font-size:4.4pt;color:var(--muted);margin-left:.3mm;}
+.extab.mtx.idx.sgun.sg3{font-size:5.4pt;}
+.extab.mtx.idx.sgun.sg3 th,.extab.mtx.idx.sgun.sg3 td{padding:.4mm .15mm;}
+.extab.mtx.idx.sgun.sg3 td.se{color:var(--muted);}
+.extab.mtx.idx.sgun.sg3 .ct{color:var(--ink);font-weight:700;}
+.extab.mtx.idx.sgun.sg3 th.ct{background:var(--hl-b);color:var(--hl-b-tx);}
 
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
