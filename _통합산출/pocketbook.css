@@ -367,6 +367,13 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx th,.extab.mtx.idx td{padding:.62mm .35mm;}
 .extab.mtx.idx .spc{background:#fff !important;border:none !important;width:2mm;}
 .idxttl{font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-sm);color:var(--ink);margin:.4mm 0 .6mm;border-left:2mm solid var(--hl-b);padding-left:2mm;}
+/* 시·군 전수 색인(초조밀) */
+.extab.mtx.idx.sgun{font-size:5.9pt;}
+.extab.mtx.idx.sgun th,.extab.mtx.idx.sgun td{padding:.42mm .28mm;}
+.extab.mtx.idx.sgun td.sd{text-align:left;font-family:var(--ff-sans);font-weight:600;color:var(--muted);font-size:5.4pt;}
+.extab.mtx.idx.sgun td.gw{text-align:left;font-family:var(--ff-sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:13mm;}
+.extab.mtx.idx.sgun tbody tr:nth-child(even) td{background:#f6f8fc;}
+.extab.mtx.idx.sgun .spc{background:#fff !important;}
 
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
