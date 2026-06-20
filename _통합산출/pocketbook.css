@@ -196,6 +196,19 @@ dl.terms{border-top:var(--line-w) solid var(--line);display:grid;grid-template-c
 .extab td.wait{color:var(--blue);font-style:italic;font-family:var(--ff-sans);}
 .extab .mk{color:var(--muted);}               /* 목업(예시) 숫자는 회색 */
 
+/* 용어 정의 뱃지(0-1) — 번호 원형뱃지 + 양성평등 강조바 */
+.tdefs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4mm;margin-top:2mm;}
+.tdefs .td{display:flex;gap:1.5mm;align-items:flex-start;background:var(--paper);border:var(--line-w) solid var(--line);border-radius:1.6mm;padding:1.5mm 1.8mm;}
+.tdefs .td .bn{flex-shrink:0;width:4.6mm;height:4.6mm;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:var(--fs-sm);display:flex;align-items:center;justify-content:center;line-height:1;}
+.tdefs .td .tt{min-width:0;}
+.tdefs .td .tt b{display:block;font-size:var(--fs-sm);color:var(--ink);font-weight:700;line-height:1.15;}
+.tdefs .td .tt span{display:block;font-size:var(--fs-xs);color:var(--muted);line-height:1.28;margin-top:.3mm;}
+.tdefs .gp{grid-column:1/-1;background:var(--hl-b);border-color:#b9cdec;align-items:center;}
+.tdefs .gp .bn{width:auto;height:4.6mm;border-radius:1.2mm;padding:0 1.8mm;background:var(--gold);font-size:var(--fs-xs);letter-spacing:.02em;}
+.tdefs .gp .tt b{color:var(--hl-b-tx);}
+.tdefs .gp .tt span{color:#3c5c86;}
+.tdefs .gp .tt span em{font-style:normal;font-weight:700;color:var(--red-deep);}
+
 /* 번호 매칭 정의(defs) — 라이트블루 칩 UI */
 .defs{display:grid;grid-template-columns:1fr 1fr;gap:1.6mm;margin-top:2.5mm;}
 .defs .d{background:var(--paper);border-radius:1.4mm;padding:1.8mm 2.6mm;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.32;display:flex;gap:1.6mm;align-items:baseline;}
@@ -632,7 +645,7 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
 .rkrow{display:flex;align-items:baseline;gap:1.6mm;font-size:var(--fs-sm);padding:.9mm 0;border-bottom:.2mm solid #f2f4f7;}
 .rkrow:last-child{border-bottom:none;}
 .rkrow .rkn{font-family:var(--ff-mono);font-size:6.4pt;color:var(--muted);width:4mm;flex-shrink:0;}
-.rkrow .rkl{flex:1;color:var(--ink-soft);}
+.rkrow .rkl{min-width:16mm;color:var(--ink-soft);}
 .rkrow .rkv{font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
 .rkrow .rkv.cut{color:var(--red);}
 
