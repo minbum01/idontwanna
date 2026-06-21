@@ -401,6 +401,7 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
 .extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
 .extab tr.totr td b{color:var(--ink);}
+.extab .se9{display:block;font-size:4.8pt;line-height:1.15;color:var(--muted);font-weight:400;white-space:nowrap;margin-top:.3mm;}
 .extab .r19{display:block;font-size:5pt;line-height:1.12;font-weight:400;color:var(--muted);margin-top:.3mm;font-family:var(--ff-mono);}
 
 /* 공지(notice) 콜아웃 */
