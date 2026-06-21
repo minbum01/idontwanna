@@ -663,6 +663,12 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
 .rk2 td.nm .rkn{font-family:var(--ff-mono);font-size:6.2pt;color:var(--muted);margin-right:1.6mm;}
 .rk2 td.cut{text-align:right;font-family:var(--ff-mono);font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;}
 .rk2 td.cr{text-align:right;font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+/* 랭킹 2단 레이아웃(행정 2열 + 기술 1열, 합격선·경쟁률 한 페이지) */
+.rwrap2{display:flex;gap:4mm;align-items:flex-start;margin-top:.6mm;}
+.rwrap2 .adm{flex:2;} .rwrap2 .tec{flex:1;}
+.rwrap2 .r2col{display:grid;grid-template-columns:1fr 1fr;gap:0 3mm;}
+.rwrap2 .rkh{margin-bottom:.8mm;}
+.rwrap2 .rkrow{padding:.6mm 0;}
 
 /* ── 비교(국가직 vs 지방직) ── */
 .cmptab th.gk{background:var(--red);} .cmptab th.jb{background:#5b7cb8;}
