@@ -402,6 +402,11 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
 .extab tr.totr td b{color:var(--ink);}
 
+/* 공지(notice) 콜아웃 */
+.notice{display:flex;gap:2.2mm;align-items:baseline;background:var(--sky);border-left:1.2mm solid var(--blue);border-radius:0 1.2mm 1.2mm 0;padding:1.8mm 2.6mm;margin-bottom:1.6mm;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.42;}
+.notice .lab{flex:none;font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-xs);color:var(--blue);white-space:nowrap;letter-spacing:.01em;}
+.notice b{color:var(--ink);font-weight:700;}
+
 /* 요건 리스트(live) */
 .live{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 4mm;margin-top:1mm;}
 .live .l{display:flex;gap:2mm;font-size:var(--fs-sm);color:var(--ink-soft);line-height:1.35;}
@@ -648,6 +653,16 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
 .rkrow .rkl{min-width:16mm;color:var(--ink-soft);}
 .rkrow .rkv{font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
 .rkrow .rkv.cut{color:var(--red);}
+/* 통합 랭킹표(직렬 | 합격선 | 경쟁률) */
+.rk2{width:100%;border-collapse:collapse;font-size:var(--fs-sm);}
+.rk2 th{font-size:var(--fs-xs);color:var(--muted);font-weight:600;text-align:right;padding:0 0 .9mm;border-bottom:.4mm solid var(--line);}
+.rk2 th:first-child{text-align:left;}
+.rk2 td{padding:.82mm 0;border-bottom:.2mm solid #f2f4f7;}
+.rk2 tr:last-child td{border-bottom:none;}
+.rk2 td.nm{color:var(--ink-soft);}
+.rk2 td.nm .rkn{font-family:var(--ff-mono);font-size:6.2pt;color:var(--muted);margin-right:1.6mm;}
+.rk2 td.cut{text-align:right;font-family:var(--ff-mono);font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;}
+.rk2 td.cr{text-align:right;font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
 
 /* ── 비교(국가직 vs 지방직) ── */
 .cmptab th.gk{background:var(--red);} .cmptab th.jb{background:#5b7cb8;}
