@@ -401,7 +401,10 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
 .extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
 .extab tr.totr td b{color:var(--ink);}
-.extab .se9{display:block;font-size:4.8pt;line-height:1.15;color:var(--muted);font-weight:400;white-space:nowrap;margin-top:.3mm;}
+.extab .se9{display:block;font-size:5.4pt;line-height:1.2;font-weight:400;white-space:nowrap;margin-top:.4mm;}
+.extab .se9 .sv{color:var(--red);}        /* 선발 = 파랑 */
+.extab .se9 .av{color:var(--ink-soft);}   /* 응시 = 진회색 */
+.extab .se9 b{font-weight:700;}
 .extab .r19{display:block;font-size:5pt;line-height:1.12;font-weight:400;color:var(--muted);margin-top:.3mm;font-family:var(--ff-mono);}
 
 /* 공지(notice) 콜아웃 */
@@ -670,11 +673,12 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
 .rwrap2 .rgrp{flex:1;min-width:0;}
 .rwrap2 .r2col{display:grid;grid-template-columns:1fr 1fr;gap:0 2.5mm;}
 .rwrap2 .rkh{font-family:var(--ff-sans);font-weight:700;font-size:var(--fs-sm);color:var(--ink);border-left:1.6mm solid var(--hl-b);border-bottom:none;padding:.2mm 0 .2mm 1.8mm;margin-bottom:1.2mm;}
-.rwrap2 .rkrow{padding:.82mm 0;gap:1.2mm;}
+.rwrap2 .rkrow{padding:.82mm 0;gap:1.2mm;font-size:7pt;}
 .rwrap2 .rkl{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rwrap2 .rkv{margin-left:auto;padding-left:1mm;}
+.rwrap2 .rkv{margin-left:auto;padding-left:1mm;white-space:nowrap;}
 .rwrap2 .rkn{color:#9db4d6;}
 .rwrap2 .rkv,.rwrap2 .rkv.cut{color:var(--blue);}
+.rwrap2 .rkv .ps{font-size:6pt;color:var(--muted);font-weight:600;}  /* PSAT 합격선 = 회색 */
 
 /* ── 비교(국가직 vs 지방직) ── */
 .cmptab th.gk{background:var(--red);} .cmptab th.jb{background:#5b7cb8;}
