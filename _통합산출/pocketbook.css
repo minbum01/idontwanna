@@ -396,12 +396,25 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun.sg3 td.se{color:var(--muted);}
 .extab.mtx.idx.sgun.sg3 .ct{color:var(--ink);font-weight:700;}
 .extab.mtx.idx.sgun.sg3 th.ct{background:var(--hl-b);color:var(--hl-b-tx);}
+/* ── 색인(sgun) 헤더 개편: 알록달록 음영 제거 + 연도 그룹 테두리 ── */
+.extab.mtx.idx.sgun .yhi{border-left:none !important;border-right:none !important;}
+.extab.mtx.idx.sgun tbody tr:last-child td.yhi{border-bottom:none !important;}
+.extab.mtx.idx.sgun thead th{background:#fff !important;color:var(--ink-soft) !important;border-bottom:.35mm solid var(--ink-soft);}
+.extab.mtx.idx.sgun thead th.yhi{background:#fff !important;color:var(--ink) !important;border-top:none !important;}
+.extab.mtx.idx.sgun.sg3 th.ct{background:#fff !important;color:var(--ink-soft) !important;}
+.extab.mtx.idx.sgun td.yhi{color:var(--ink) !important;}
+/* 연도 그룹 좌측 구분선 — 헤더: .grp 클래스 기반 / 본문: nth-child 위치 기반 */
+.extab.mtx.idx.sgun tbody tr>:nth-child(3),.extab.mtx.idx.sgun tbody tr>:nth-child(4),
+.extab.mtx.idx.sgun tbody tr>:nth-child(6),.extab.mtx.idx.sgun tbody tr>:nth-child(8),
+.extab.mtx.idx.sgun tbody tr>:nth-child(13),.extab.mtx.idx.sgun tbody tr>:nth-child(14),
+.extab.mtx.idx.sgun tbody tr>:nth-child(16),.extab.mtx.idx.sgun tbody tr>:nth-child(18){border-left:.25mm solid var(--line);}
+.extab.mtx.idx.sgun thead th.grp{border-left:.4mm solid var(--ink-soft) !important;}
 
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
 .extab tr.totr td{background:var(--hl-b);color:var(--ink);border-top:.5mm solid var(--ink-soft);}
 .extab tr.totr td b{color:var(--ink);}
-.extab .se9{display:block;font-size:5.4pt;line-height:1.2;font-weight:400;white-space:nowrap;margin-top:.4mm;}
+.extab .se9{display:block;font-size:6.4pt;line-height:1.2;font-weight:400;white-space:nowrap;margin-top:.4mm;}
 .extab .se9 .sv{color:var(--red);}        /* 선발 = 파랑 */
 .extab .se9 .av{color:var(--ink-soft);}   /* 응시 = 진회색 */
 .extab .se9 b{font-weight:700;}
@@ -600,6 +613,20 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
 .ci .cipg{font-family:var(--ff-mono);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-size:7.5pt;}
 .toc2-chips{display:flex;flex-wrap:wrap;gap:1.2mm;margin-top:1.2mm;}
 .toc2-chips .rc{font-size:6pt;background:var(--paper);border:.3mm solid var(--line);border-radius:8mm;padding:.3mm 1.8mm;color:var(--ink-soft);}
+/* ── 목차 컴팩트 변형(.tight) — 전 파트 1쪽 수용 ── */
+.toc2.tight .toc2-h{padding:2mm 4mm;margin-bottom:2.4mm;}
+.toc2.tight .toc2-h .ko{font-size:13pt;}
+.toc2.tight .toc2-h .en{font-size:8.5pt;}
+.toc2.tight .crow{grid-template-columns:30mm 1fr;gap:3mm;padding:1.4mm 0;}
+.toc2.tight .cpart{padding:1.5mm 2.2mm;border-radius:1.6mm;}
+.toc2.tight .cpart .cno{font-size:5.8pt;margin-bottom:.15mm;}
+.toc2.tight .cpart .cnm{font-size:9pt;}
+.toc2.tight .ci{padding:.3mm 0;font-size:7pt;gap:1.6mm;}
+.toc2.tight .ci .cinum{font-size:6.3pt;}
+.toc2.tight .ci .cipg{font-size:7pt;}
+.toc2.tight .toc2-chips{margin-top:.6mm;gap:.9mm;}
+.toc2.tight .toc2-chips .rc{font-size:5.3pt;padding:.15mm 1.3mm;}
+.toc2.tight .toc-note{margin-top:1.4mm;font-size:6pt;}
 
 /* ── 간지 (파트 도비라) ── */
 /* 표지(해커스 네이비→연블루→화이트) 색감의 은은한 그라데이션을 페이지 전체 배경에 */
@@ -688,6 +715,8 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
    제본 여백(안쪽)은 펼침면 위치(verso/recto)대로 페이지 자체 패딩에 이미 반영됨. */
 @page{size:var(--pg-w) var(--pg-h);margin:0;}
 @media print{
+  /* 배경색·그라데이션·틴트가 어떤 브라우저/환경에서도 빠지지 않게 강제 */
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
   body{background:#fff;}
   .toolbar{display:none;}
   .fitwrap{overflow:visible;}
