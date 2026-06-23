@@ -139,3 +139,18 @@ print(f'  물리 페이지(낱장, 인쇄): {n_phys}쪽')
 print(f'  화면 펼침: {len(spreads)}개')
 if missing:
     print('  !! 없음:', ', '.join(missing))
+
+# ── 독립 파일 생성 (CSS·JS 인라인 → 파일 하나로 패드·오프라인에서도 동일하게) ──
+OUT_SA = '포켓북_전체_standalone.html'
+css_txt = open('pocketbook.css', encoding='utf-8').read()
+js_txt  = open('pocketbook.js',  encoding='utf-8').read()
+# @import 외부 폰트 URL은 그대로 유지 (CDN에서 로드), 나머지 CSS 인라인
+DOC_SA = DOC.replace(
+    '<link rel="stylesheet" href="pocketbook.css">',
+    f'<style>\n{css_txt}\n</style>'
+).replace(
+    '<script src="pocketbook.js"></script>',
+    f'<script>\n{js_txt}\n</script>'
+)
+open(OUT_SA, 'w', encoding='utf-8').write(DOC_SA)
+print(f'생성: {OUT_SA}  ← 패드·오프라인용 독립 파일')
