@@ -3,6 +3,11 @@ _render/
 __pycache__/
 *.png
 *.pyc
+*.bak
+_tmp_*
+
+# PDF (대용량, 재생성 가능)
+*.pdf
 
 # OS
 Thumbs.db
