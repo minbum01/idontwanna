@@ -403,6 +403,10 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun thead th.yhi{background:#fff !important;color:var(--ink) !important;border-top:none !important;}
 .extab.mtx.idx.sgun.sg3 th.ct{background:#fff !important;color:var(--ink) !important;}
 .extab.mtx.idx.sgun td.yhi{color:var(--ink) !important;}
+/* 시 단위 직류별 색인 (.city) — 표준 어두운 헤더 복원 */
+.extab.mtx.idx.sgun.city thead th{background:var(--th-bg) !important;color:var(--th-fg) !important;border-bottom:none !important;}
+.extab.mtx.idx.sgun.sg3.city th.ct{background:var(--th-bg) !important;color:var(--th-fg) !important;}
+.extab.mtx.idx.sgun.city thead th.grp{border-left:.4mm solid rgba(255,255,255,.3) !important;}
 /* 연도 그룹 좌측 구분선 — 헤더: .grp 클래스 기반 / 본문: nth-child 위치 기반 */
 .extab.mtx.idx.sgun tbody tr>:nth-child(3),.extab.mtx.idx.sgun tbody tr>:nth-child(4),
 .extab.mtx.idx.sgun tbody tr>:nth-child(6),.extab.mtx.idx.sgun tbody tr>:nth-child(8),
