@@ -1,78 +1,153 @@
 # -*- coding: utf-8 -*-
-import re, sys, io, os
+"""rebuild_sakindo.py — RAW v3에서 직접 추출하여 포켓북_07_색인.html 재생성"""
+import re, json, sys, io, os
+from collections import defaultdict
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# ── 1. 기존 색인에서 모든 데이터 추출 ──
-with open('포켓북_07_색인.html', encoding='utf-8') as f:
-    h = f.read()
-seg = h.split('<!-- SPREADS:START -->')[1].split('<!-- SPREADS:END -->')[0]
+# ── 0. RAW 로드 ──
+with open('../합격선_관리_v3.html', encoding='utf-8') as f:
+    html = f.read()
+m = re.search(r'const RAW=(\[.*?\]);', html, re.DOTALL)
+raw = json.loads(m.group(1))
 
-rows_all = []
-for tbody_m in re.finditer(r'<tbody>(.*?)</tbody>', seg, re.DOTALL):
-    tbody = tbody_m.group(1)
-    for row_m in re.finditer(r'<tr[^>]*>(.*?)</tr>', tbody, re.DOTALL):
-        row = row_m.group(1)
-        if 'city-gap' in row_m.group(0):
-            continue
-        cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
-        cells = [re.sub(r'<[^>]+>', '', c).strip() for c in cells]
-        if len(cells) < 9:
-            continue
-        for side in [(0,1,2,3,4,5,6,7,8), (10,11,12,13,14,15,16,17,18)]:
-            if max(side) >= len(cells):
-                continue
-            i0,i1,i2,i3,i4,i5,i6,i7,i8 = side
-            sido = cells[i0]; gwan = cells[i1]
-            if not sido or not gwan:
-                continue
-            rows_all.append({
-                'sido': sido, 'gwan': gwan, 'yhi': cells[i2],
-                'se25': cells[i3], 'ct25': cells[i4],
-                'se24': cells[i5], 'ct24': cells[i6],
-                'se23': cells[i7], 'ct23': cells[i8],
-            })
-
-print(f'추출 항목: {len(rows_all)}개')
-
-# ── 2. 도별 정렬 ──
-# 광역시·특별시는 3-3 시 단위 색인에 이미 있으므로 제외
+# ── 1. 상수 정의 ──
 SIDOS = ['경기','강원','충북','충남','전북','전남','경북','경남','제주']
 
-def yhi_int(r):
-    try:
-        return int(float(r['yhi'] or 0))
-    except:
-        return 0
+BONCHEONG = {
+    '경기':  {'경기도'},
+    '강원':  {'강원도','강원특별자치도'},
+    '충북':  {'충청북도'},
+    '충남':  {'충청남도'},
+    '전북':  {'전북특별자치도','전라북도'},
+    '전남':  {'전라남도'},
+    '경북':  {'경상북도'},
+    '경남':  {'경상남도'},
+    '제주':  {'제주특별자치도','제주도','도'},
+}
 
+DO_ABBR = {
+    '경기도':'경기', '경상남도':'경남', '경상북도':'경북',
+    '충청남도':'충남', '충청북도':'충북',
+    '전라남도':'전남', '전라북도':'전북',
+    '전북특별자치도':'전북', '강원특별자치도':'강원', '제주특별자치도':'제주',
+}
+
+JK_ABBR = {
+    '일반행정':'행정', '일반토목':'토목', '일반기계':'기계', '일반전기':'전기',
+    '일반농업':'농업', '일반화공':'화공', '일반환경':'환경', '일반수산':'수산',
+    '사회복지':'사·복', '보건진료':'보·진', '산림자원':'산·자', '도시계획':'도·계',
+    '통신기술':'통·기', '의료기술':'의·기', '농업기계':'농·기', '식품위생':'식·위',
+    '시설관리':'시·관', '방송통신':'방·통', '수도토목':'수·목', '기록연구':'기·연',
+    '기록관리':'기·관', '해양수산':'해·산', '교통시설':'교·시', '선박항해':'선·항',
+    '기계운전':'기·운', '산림보호':'산·보',
+}
+
+def abbr_r5(sido, r5):
+    r5 = r5.strip()
+    if not r5 or r5 in BONCHEONG.get(sido, set()):
+        return '본청'
+    if '일괄' in r5:
+        return '일괄'
+    name = r5
+    for k, v in DO_ABBR.items():
+        name = name.replace(k, v)
+    if '의회' in name:
+        name = name.replace('의회', '.의')
+    return name
+
+def abbr_jk(jk):
+    return JK_ABBR.get(jk, jk)
+
+def make_gwan(sido, r5, jk):
+    return abbr_r5(sido, r5) + '·' + abbr_jk(jk)
+
+# ── 2. 필터 및 집계 ──
+def is_target(r):
+    if r[0] not in SIDOS or r[2] not in ('2023','2024','2025','2026'): return False
+    if r[4] != '공개경쟁' or r[10] != '일반' or r[9] != '9급' or r[1] != '공무원': return False
+    jk = r[8].strip()
+    if '(장)' in jk or '(저)' in jk: return False
+    return True
+
+rows = [r for r in raw if is_target(r)]
+
+def fv(v, is_cut=False):
+    try:
+        f = float(str(v).replace(',',''))
+        return str(int(round(f)))
+    except:
+        return '·'
+
+data = defaultdict(lambda: defaultdict(lambda: (None, None)))
+for r in rows:
+    key = (r[0], r[5].strip(), r[8].strip())
+    yr = r[2]
+    if data[key][yr] == (None, None):
+        data[key][yr] = (r[11], r[18])
+
+print(f'유니크 (시도·기관·직류): {len(data)}')
+
+# ── 3. 시도별 정렬 및 그룹화 ──
 groups = {}
 for sido in SIDOS:
-    g = [r for r in rows_all if r['sido'] == sido]
-    g.sort(key=lambda r: -yhi_int(r))
-    groups[sido] = g
+    keys_s = [(k, d) for k, d in data.items() if k[0] == sido]
 
-sidos_have = [s for s in SIDOS if groups.get(s)]
+    # 기관별 2025 선발 합산 → 내림차순
+    gwan_sel25 = defaultdict(int)
+    for (s, r5, jk), d in keys_s:
+        try:
+            gwan_sel25[r5] += int(float(str(d.get('2025',(None,None))[0] or 0)))
+        except:
+            pass
 
-# ── 3. HTML 상수 ──
+    gwans_sorted = sorted(gwan_sel25.keys(), key=lambda g: -gwan_sel25[g])
+
+    rows_out = []
+    for g in gwans_sorted:
+        items = [(jk, d) for (s, r5, jk), d in keys_s if r5 == g]
+        items.sort(key=lambda x: -(
+            int(float(str(x[1].get('2025',(None,None))[0] or 0)))
+            if x[1].get('2025',(None,None))[0] else 0
+        ))
+        for jk, d in items:
+            gwan_disp = make_gwan(sido, g, jk)
+            yhi = fv(d.get('2026',(None,None))[0])
+            se25, ct25 = d.get('2025', (None,None))
+            se24, ct24 = d.get('2024', (None,None))
+            se23, ct23 = d.get('2023', (None,None))
+            rows_out.append({
+                'sido': sido, 'gwan': gwan_disp,
+                'yhi':  yhi,
+                'se25': fv(se25), 'ct25': fv(ct25),
+                'se24': fv(se24), 'ct24': fv(ct24),
+                'se23': fv(se23), 'ct23': fv(ct23),
+            })
+    groups[sido] = rows_out
+
+for sido in SIDOS:
+    print(f'  {sido}: {len(groups[sido])}행')
+
+# ── 4. HTML 상수 ──
 COLGROUP = (
     '<colgroup>'
-    '<col style="width:6mm"><col style="width:13mm"><col>'
+    '<col style="width:6mm"><col style="width:14mm"><col>'
     '<col><col><col><col><col><col>'
     '<col style="width:1.4mm">'
-    '<col style="width:6mm"><col style="width:13mm"><col>'
+    '<col style="width:6mm"><col style="width:14mm"><col>'
     '<col><col><col><col><col><col>'
     '</colgroup>'
 )
 
 HEADER = (
     '<thead><tr>'
-    '<th rowspan="2">시도</th><th rowspan="2">기관</th>'
+    '<th rowspan="2">시도</th><th rowspan="2">기관·직류</th>'
     '<th class="grp" rowspan="2">\'26<br>선</th>'
     '<th colspan="2" class="grp">\'25</th>'
     '<th colspan="2" class="grp">\'24</th>'
     '<th colspan="2" class="grp">\'23</th>'
     '<th class="spc" rowspan="2"></th>'
-    '<th rowspan="2">시도</th><th rowspan="2">기관</th>'
+    '<th rowspan="2">시도</th><th rowspan="2">기관·직류</th>'
     '<th class="grp" rowspan="2">\'26<br>선</th>'
     '<th colspan="2" class="grp">\'25</th>'
     '<th colspan="2" class="grp">\'24</th>'
@@ -93,22 +168,11 @@ EMPTY = (
     '<td class="se"></td><td></td>'
 )
 
-GAP_ROW = (
-    '<tr class="city-gap">'
-    '<td class="sd"></td><td class="gw"></td><td class="yhi"></td>'
-    '<td class="se"></td><td></td><td class="se"></td><td></td>'
-    '<td class="se"></td><td></td><td class="spc"></td>'
-    '<td class="sd"></td><td class="gw"></td><td class="yhi"></td>'
-    '<td class="se"></td><td></td><td class="se"></td><td></td>'
-    '<td class="se"></td><td></td></tr>'
-)
-
 def make_entry(r):
-    yhi = r['yhi'] if r['yhi'] not in ('', None) else '·'
     return (
         f'<td class="sd">{r["sido"]}</td>'
         f'<td class="gw">{r["gwan"]}</td>'
-        f'<td class="yhi">{yhi}</td>'
+        f'<td class="yhi">{r["yhi"]}</td>'
         f'<td class="se">{r["se25"]}</td><td><b class="ct">{r["ct25"]}</b></td>'
         f'<td class="se">{r["se24"]}</td><td><b class="ct">{r["ct24"]}</b></td>'
         f'<td class="se">{r["se23"]}</td><td><b class="ct">{r["ct23"]}</b></td>'
@@ -121,27 +185,21 @@ def make_spread(chunk, sido_label, part_str, show_note=False):
     i = 0
     items = list(chunk)
     while i < len(items):
-        item = items[i]
-        left = make_entry(item)
-        i += 1
-        if i < len(items):
-            right = make_entry(items[i])
-            i += 1
-        else:
-            right = EMPTY
+        left = make_entry(items[i]); i += 1
+        right = make_entry(items[i]) if i < len(items) else EMPTY
+        if i < len(items): i += 1
         html_rows.append(f'<tr>{left}<td class="spc"></td>{right}</tr>')
 
-    tbody_content = '\n'.join(html_rows)
-    table_html = (
-        f'<table class="extab fix mtx idx sgun sg3 city" style="font-size:5.9pt;">'
-        f'\n{COLGROUP}\n{HEADER}\n'
-        f'<tbody>\n{tbody_content}\n</tbody>\n</table>'
-    )
     note = (
         '<p style="margin-bottom:1mm;font-size:var(--fs-sm);">'
         '<b>선</b>=선발(명)·<b class="ct">컷</b>=합격선(과목평균 100점)·'
-        "'26은 선발만·빈칸(·)=미모집</p>"
+        '\'26은 선발만·빈칸(·)=미모집</p>'
         if show_note else ''
+    )
+    table_html = (
+        f'<table class="extab fix mtx idx sgun sg3 city" style="font-size:5.9pt;">'
+        f'\n{COLGROUP}\n{HEADER}\n'
+        f'<tbody>\n' + '\n'.join(html_rows) + '\n</tbody>\n</table>'
     )
     blk = (
         f'<div class="blk fill"><div class="mh">'
@@ -155,73 +213,61 @@ def make_spread(chunk, sido_label, part_str, show_note=False):
     page = f'<div class="page">\n    {rhead}\n{blk}\n    {folio}\n  </div>'
     return f'\n  <div class="spread">{page}\n  </div>\n'
 
-# ── 4. 도별 spread 생성 ──
+# ── 5. 도별 spread 생성 ──
+with open('포켓북_07_색인.html', encoding='utf-8') as f:
+    h = f.read()
+seg = h.split('<!-- SPREADS:START -->')[1].split('<!-- SPREADS:END -->')[0]
+
 spreads_html = []
 first_ever = True
-for sido in sidos_have:
-    items = groups[sido]
-    n = len(items)
-    items_per_page = ROWS_PER_PAGE * 2  # 2열
-    total_pages = max(1, (n + items_per_page - 1) // items_per_page)
+ITEMS_PER_PAGE = ROWS_PER_PAGE * 2
 
+for sido in SIDOS:
+    items = groups[sido]
+    if not items:
+        continue
+    n = len(items)
+    total_pages = max(1, (n + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE)
     for p in range(total_pages):
-        start_idx = p * items_per_page
-        end_idx = min(start_idx + items_per_page, n)
-        chunk = items[start_idx:end_idx]
-        if total_pages == 1:
-            label = sido
-            part_str = sido
-        else:
-            label = f'{sido} ({p+1}/{total_pages})'
-            part_str = label
-        sp = make_spread(chunk, label, part_str, show_note=first_ever)
-        spreads_html.append(sp)
+        chunk = items[p * ITEMS_PER_PAGE : (p+1) * ITEMS_PER_PAGE]
+        label = sido if total_pages == 1 else f'{sido} ({p+1}/{total_pages})'
+        spreads_html.append(make_spread(chunk, label, label, show_note=first_ever))
         first_ever = False
 
-print(f'지방9·8급 spread 수: {len(spreads_html)}')
+print(f'지방9·8급 spread: {len(spreads_html)}개')
 
-# ── 5. 교육행정·지방7급 spread 유지 ──
+# ── 6. 교행·지방7급 spread 유지 ──
 def extract_spreads_by_sect(html_seg, sect_id):
     results = []
     pos = 0
     oc = re.compile(r'<div\b[^>]*>|</div\s*>')
-    head_pat = re.compile(r'<div\b[^>]*\bclass="[^"]*\bspread\b[^"]*"[^>]*>')
     while True:
         idx = html_seg.find(f'<span class="n mono">{sect_id}</span>', pos)
-        if idx < 0:
-            break
+        if idx < 0: break
         sp_start = html_seg.rfind('<div class="spread">', 0, idx)
         depth = 0; end = None
         for t in oc.finditer(html_seg, sp_start):
-            if t.group().startswith('</div'):
-                depth -= 1
-                if depth == 0:
-                    end = t.end()
-                    break
-            else:
-                depth += 1
-        if end is None:
-            break
+            if t.group().startswith('</div'): depth -= 1
+            else: depth += 1
+            if depth == 0: end = t.end(); break
+        if end is None: break
         results.append('\n  ' + html_seg[sp_start:end] + '\n')
         pos = end
     return results
 
 gyohaeng_spreads = extract_spreads_by_sect(seg, '4-6')
 jibang7_spreads  = extract_spreads_by_sect(seg, '5-6')
-print(f'교육행정: {len(gyohaeng_spreads)}, 지방7급: {len(jibang7_spreads)}')
+print(f'교행: {len(gyohaeng_spreads)}, 지방7급: {len(jibang7_spreads)}')
 
-# ── 6. 최종 조합 및 저장 ──
+# ── 7. 저장 ──
 all_spreads = spreads_html + gyohaeng_spreads + jibang7_spreads
-full_seg = ''.join(all_spreads)
-print(f'최종 spread 합계: {len(all_spreads)}')
-
 new_h = (
     h.split('<!-- SPREADS:START -->')[0]
     + '<!-- SPREADS:START -->'
-    + full_seg
+    + ''.join(all_spreads)
     + '<!-- SPREADS:END -->'
     + h.split('<!-- SPREADS:END -->')[1]
 )
 with open('포켓북_07_색인.html', 'w', encoding='utf-8') as f:
     f.write(new_h)
-print('저장 완료')
+print(f'저장 완료 — 총 spread: {len(all_spreads)}')
