@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os as _os
+_os.chdir(_os.path.dirname(_os.path.abspath(__file__)))
 """파트별 포켓북 HTML들을 하나로 묶어 '포켓북_전체.html' 생성 (완전한 출력물).
 
 핵심:

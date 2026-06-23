@@ -383,25 +383,25 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 /* 시·군 전수 색인(초조밀) */
 .extab.mtx.idx.sgun{font-size:5.9pt;}
 .extab.mtx.idx.sgun th,.extab.mtx.idx.sgun td{padding:.42mm .28mm;}
-.extab.mtx.idx.sgun td.sd{text-align:left;font-family:var(--ff-sans);font-weight:600;color:var(--muted);font-size:5.4pt;}
+.extab.mtx.idx.sgun td.sd{text-align:left;font-family:var(--ff-sans);font-weight:700;color:var(--ink);font-size:5.4pt;}
 .extab.mtx.idx.sgun td.gw{text-align:left;font-family:var(--ff-sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16mm;}
 .extab.mtx.idx.sgun tbody tr:nth-child(even) td{background:#f6f8fc;}
 .extab.mtx.idx.sgun .spc{background:#fff !important;}
 .extab.mtx.idx.sgun.sg2{font-size:5.6pt;}
-.extab.mtx.idx.sgun.sg2 .se{color:var(--muted);font-weight:400;}
+.extab.mtx.idx.sgun.sg2 .se{color:var(--ink-soft);font-weight:400;}
 .extab.mtx.idx.sgun.sg2 .ct{color:var(--ink);font-weight:700;}
 .extab.mtx.idx.sgun .sc{font-weight:400;font-size:4.4pt;color:var(--muted);margin-left:.3mm;}
 .extab.mtx.idx.sgun.sg3{font-size:5.4pt;}
 .extab.mtx.idx.sgun.sg3 th,.extab.mtx.idx.sgun.sg3 td{padding:.4mm .15mm;}
-.extab.mtx.idx.sgun.sg3 td.se{color:var(--muted);}
+.extab.mtx.idx.sgun.sg3 td.se{color:var(--ink-soft);}
 .extab.mtx.idx.sgun.sg3 .ct{color:var(--ink);font-weight:700;}
 .extab.mtx.idx.sgun.sg3 th.ct{background:var(--hl-b);color:var(--hl-b-tx);}
 /* ── 색인(sgun) 헤더 개편: 알록달록 음영 제거 + 연도 그룹 테두리 ── */
 .extab.mtx.idx.sgun .yhi{border-left:none !important;border-right:none !important;}
 .extab.mtx.idx.sgun tbody tr:last-child td.yhi{border-bottom:none !important;}
-.extab.mtx.idx.sgun thead th{background:#fff !important;color:var(--ink-soft) !important;border-bottom:.35mm solid var(--ink-soft);}
+.extab.mtx.idx.sgun thead th{background:#fff !important;color:var(--ink) !important;border-bottom:.35mm solid var(--ink);}
 .extab.mtx.idx.sgun thead th.yhi{background:#fff !important;color:var(--ink) !important;border-top:none !important;}
-.extab.mtx.idx.sgun.sg3 th.ct{background:#fff !important;color:var(--ink-soft) !important;}
+.extab.mtx.idx.sgun.sg3 th.ct{background:#fff !important;color:var(--ink) !important;}
 .extab.mtx.idx.sgun td.yhi{color:var(--ink) !important;}
 /* 연도 그룹 좌측 구분선 — 헤더: .grp 클래스 기반 / 본문: nth-child 위치 기반 */
 .extab.mtx.idx.sgun tbody tr>:nth-child(3),.extab.mtx.idx.sgun tbody tr>:nth-child(4),
