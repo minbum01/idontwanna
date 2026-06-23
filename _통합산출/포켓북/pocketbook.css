@@ -405,6 +405,8 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun td.yhi{color:var(--ink) !important;}
 /* sg3 양면 색인: yhi('26선) 컬럼 너비 고정 → 좌우 서브컬럼 헤더 정렬 일치 */
 .extab.mtx.idx.sgun.sg3 td.yhi{min-width:4.5mm;max-width:4.5mm;overflow:hidden;}
+/* 시도 구분선: 새 시도 첫 행 상단에 선 */
+.extab.mtx.idx.sgun.sg3 tr.city-start td:not(.spc){border-top:.5mm solid var(--ink-soft) !important;}
 /* 시 단위 직류별 색인 (.city) — 표준 어두운 헤더 복원 */
 .extab.mtx.idx.sgun.city thead th{background:var(--th-bg) !important;color:var(--th-fg) !important;border-bottom:none !important;}
 .extab.mtx.idx.sgun.sg3.city th.ct{background:var(--th-bg) !important;color:var(--th-fg) !important;}
