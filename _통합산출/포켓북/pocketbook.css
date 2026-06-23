@@ -417,6 +417,7 @@ table.chg{width:100%;border-collapse:collapse;font-size:var(--fs-table);}
 .extab.mtx.idx.sgun tbody tr>:nth-child(13),.extab.mtx.idx.sgun tbody tr>:nth-child(14),
 .extab.mtx.idx.sgun tbody tr>:nth-child(16),.extab.mtx.idx.sgun tbody tr>:nth-child(18){border-left:.25mm solid var(--line);}
 .extab.mtx.idx.sgun thead th.grp{border-left:.4mm solid var(--ink-soft) !important;}
+.extab.mtx.idx.sgun thead th.grp{text-align:center !important;}
 
 /* extab 보조: 2차컷 강조 · 합계행 */
 .extab td.cv{color:var(--hl-b-tx);font-weight:700;}
