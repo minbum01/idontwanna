@@ -203,13 +203,13 @@ def make_spread(chunk, sido_label, part_str, show_note=False):
     )
     blk = (
         f'<div class="blk fill"><div class="mh">'
-        f'<span class="n mono">3-7</span>'
-        f'<h3 class="serif">지방 9·8급 시·군 색인 — {sido_label}</h3>'
+        f'<span class="n mono">3-4</span>'
+        f'<h3 class="serif">시·군 색인 — {sido_label}</h3>'
         f'<span class="flag real fb">실데이터</span></div>'
         f'<div class="bd">{note}{table_html}</div></div>'
     )
     folio = '<div class="folio"><span class="src">해커스공무원 필기 합격선 배치표</span><span class="pg serif">0</span></div>'
-    rhead = f'<div class="rhead"><span class="r">데이터 색인</span><span>지방 9·8급 {part_str}</span></div>'
+    rhead = f'<div class="rhead"><span class="r">PART 3 · 지방직 9·8급</span><span>시·군 색인 {part_str}</span></div>'
     page = f'<div class="page">\n    {rhead}\n{blk}\n    {folio}\n  </div>'
     return f'\n  <div class="spread">{page}\n  </div>\n'
 
