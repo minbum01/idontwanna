@@ -172,9 +172,10 @@ CROPWRAP_CSS = '''
 .cm.br{bottom:3.33mm;right:3.33mm;}
 .cm.br::before{bottom:0;right:0;}
 .cm.br::after{bottom:0;right:0;}
+/* @page는 @media 밖에 있어야 Chrome이 인식 */
+@page{size:177.65mm 234.65mm;margin:0;}
 @media screen{.cropwrap{display:contents;}.cm{display:none;}}
 @media print{
-  @page{size:177.65mm 234.65mm;margin:0;}
   .cropwrap{page-break-after:always;break-after:page;}
   .cropwrap:last-child{page-break-after:auto;break-after:auto;}
   .page{page-break-after:auto !important;break-after:auto !important;}
