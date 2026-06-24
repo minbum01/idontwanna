@@ -11,7 +11,8 @@ m = re.search(r'const RAW=(\[.*?\]);', html, re.DOTALL)
 raw = json.loads(m.group(1))
 
 def is_gyo(r):
-    if r[1] != '공무원' or r[4] != '공개경쟁' or r[10] != '일반': return False
+    if r[1] not in ('공무원', '교행'): return False  # 교육행정은 r[1]='교행'
+    if r[4] != '공개경쟁' or r[10] != '일반': return False
     if r[9] != '9급': return False
     if r[8] not in ('교육행정', '사서', '시설'): return False
     if r[2] not in ('2023', '2024', '2025', '2026'): return False
@@ -53,7 +54,7 @@ def get_sido_rows(sido):
         r5 = k[1]
         try: gwan_sel[r5] += int(float(str(d.get('2026', (None, None))[0] or 0)))
         except: pass
-    gwans = sorted(set(k[1] for k, _ in ks), key=lambda g: -gwan_sel[g])
+    gwans = sorted(set(k[1] for k, _ in ks))  # 가나다순
     out = []
     for g in gwans:
         items = [(k[2], d) for k, d in ks if k[1] == g]

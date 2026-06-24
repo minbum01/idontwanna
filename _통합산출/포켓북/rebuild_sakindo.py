@@ -101,7 +101,7 @@ for sido in SIDOS:
         except:
             pass
 
-    gwans_sorted = sorted(gwan_sel25.keys(), key=lambda g: -gwan_sel25[g])
+    gwans_sorted = sorted(gwan_sel25.keys())  # 가나다순
 
     rows_out = []
     for g in gwans_sorted:
