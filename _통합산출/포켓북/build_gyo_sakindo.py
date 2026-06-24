@@ -31,8 +31,8 @@ def fv_cut(v):
     if v in (None, ''): return '·'
     try:
         f = float(str(v).replace(',', ''))
-        if f > 100: f = round(f / 5, 1)
-        return str(int(round(f)))
+        if f > 100: f = f / 5
+        return f'{f:.1f}'
     except: return '·'
 
 data = defaultdict(dict)

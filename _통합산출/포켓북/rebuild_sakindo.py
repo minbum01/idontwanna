@@ -75,6 +75,9 @@ rows = [r for r in raw if is_target(r)]
 def fv(v, is_cut=False):
     try:
         f = float(str(v).replace(',',''))
+        if is_cut:
+            if f > 100: f = f / 5
+            return f'{f:.1f}'
         return str(int(round(f)))
     except:
         return '·'
@@ -125,9 +128,9 @@ for sido in SIDOS:
             rows_out.append({
                 'sido': sido, 'gwan': gwan_disp,
                 'yhi':  yhi,
-                'se25': fv(se25), 'ct25': fv(ct25),
-                'se24': fv(se24), 'ct24': fv(ct24),
-                'se23': fv(se23), 'ct23': fv(ct23),
+                'se25': fv(se25), 'ct25': fv(ct25, is_cut=True),
+                'se24': fv(se24), 'ct24': fv(ct24, is_cut=True),
+                'se23': fv(se23), 'ct23': fv(ct23, is_cut=True),
             })
     groups[sido] = rows_out
 

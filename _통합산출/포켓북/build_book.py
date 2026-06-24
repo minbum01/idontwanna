@@ -85,9 +85,10 @@ for f in PARTS:
         for pg in extract_divs(sp, 'page'):
             pages.append(pg)
 
-# ── folio(쪽번호) 자동 재부여: 물리 페이지 순서대로 1..N ──
+# ── folio(쪽번호) 자동 재부여: 표지 안쪽 제외, 6쪽부터 시작 ──
+PAGE_START = 6
 for idx in range(len(pages)):
-    n = idx + 1
+    n = idx + PAGE_START
     pages[idx] = re.sub(r'(<span class="pg serif">)[^<]*(</span>)',
                         lambda m, n=n: m.group(1) + str(n) + m.group(2), pages[idx], count=1)
 
