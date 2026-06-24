@@ -198,8 +198,8 @@ def make_spread(chunk, sido_label, part_str, show_note=False):
 
     note = (
         '<p style="margin-bottom:1mm;font-size:var(--fs-sm);">'
-        '<b>선</b>=선발(명)·<b class="ct">컷</b>=합격선(과목평균 100점)·'
-        '\'26은 선발만·빈칸(·)=미모집</p>'
+        '공개채용 일반 기준 · <b>선</b>=선발(명) · <b class="ct">컷</b>=합격선(과목평균 100점) · '
+        '\'26은 선발만 · 빈칸(·)=미모집</p>'
         if show_note else ''
     )
     table_html = (

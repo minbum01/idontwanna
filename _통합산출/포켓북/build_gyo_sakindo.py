@@ -149,8 +149,8 @@ print(f'총 데이터 행: {total_data}, TR 수: {len(tr_html)}')
 # spread HTML 생성
 note = (
     '<p style="margin-bottom:1mm;font-size:var(--fs-sm);">'
-    '<b>선</b>=선발(명)·<b class="ct">컷</b>=합격선(과목평균 100점)·'
-    '\'26은 선발만·빈칸(·)=미모집</p>'
+    '공개채용 일반 기준 · <b>선</b>=선발(명) · <b class="ct">컷</b>=합격선(과목평균 100점) · '
+    '\'26은 선발만 · 빈칸(·)=미모집</p>'
 )
 tbl = (
     f'<table class="extab fix mtx idx sgun city" style="font-size:6pt;">'
