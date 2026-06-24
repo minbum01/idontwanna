@@ -153,7 +153,7 @@ note = (
     '\'26은 선발만·빈칸(·)=미모집</p>'
 )
 tbl = (
-    f'<table class="extab fix mtx idx sgun" style="font-size:6pt;">'
+    f'<table class="extab fix mtx idx sgun city" style="font-size:6pt;">'
     f'\n{COLGROUP}\n{HEADER}\n'
     f'<tbody>\n' + '\n'.join(tr_html) + '\n</tbody>\n</table>'
 )
