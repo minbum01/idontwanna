@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""교행 직류별 시·도별 합격선 색인 rebuild
-   직류별 spread 1개씩: 4-3 교육행정 / 4-4 사서 / 4-5 전산 / 4-6 건축
+"""교행 시·도별 합격선 색인 rebuild
+   지방9급 색인처럼 2단 테이블, 직류별 소타이틀 행으로 구분
+   spread 1개 (4-3) 안에 교육행정/사서/전산/건축 전부
 """
 import re, json, sys, io, os
 from collections import defaultdict
@@ -19,13 +20,7 @@ rows = [r for r in raw
 SIDO_ORDER = ['서울','부산','대구','인천','광주','대전','울산','세종',
               '경기','강원','충북','충남','전북','전남','경북','경남','제주']
 
-# 직류 → (섹션번호, 헤더 라벨)
-JK_CONFIG = [
-    ('교육행정', '4-3', '교육행정'),
-    ('사서',     '4-4', '사서'),
-    ('전산',     '4-5', '전산'),
-    ('건축',     '4-6', '건축'),
-]
+JK_LIST = ['교육행정', '사서', '전산', '건축']
 
 def fv_sel(v):
     if v in (None, ''): return '·'
@@ -65,12 +60,18 @@ def get_jk_rows(jk):
         })
     return out
 
+# 2단 테이블 상수 (지방9급과 동일 구조)
 COLGROUP = (
     '<colgroup>'
-    '<col style="width:9mm">'
-    '<col style="width:8mm"><col style="width:8mm"><col style="width:8mm">'
-    '<col style="width:8mm"><col style="width:8mm">'
-    '<col style="width:8mm"><col style="width:8mm">'
+    '<col style="width:7mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
+    '<col style="width:1.4mm">'
+    '<col style="width:7mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
+    '<col style="width:6mm"><col style="width:6mm">'
     '</colgroup>'
 )
 HEADER = (
@@ -80,52 +81,98 @@ HEADER = (
     '<th colspan="2" class="grp">\'25</th>'
     '<th colspan="2" class="grp">\'24</th>'
     '<th colspan="2" class="grp">\'23</th>'
+    '<th class="spc" rowspan="2"></th>'
+    '<th rowspan="2">시도</th>'
+    '<th class="grp" rowspan="2">\'26<br>선</th>'
+    '<th colspan="2" class="grp">\'25</th>'
+    '<th colspan="2" class="grp">\'24</th>'
+    '<th colspan="2" class="grp">\'23</th>'
     '</tr><tr>'
+    '<th class="grp">선</th><th class="ct">컷</th>'
+    '<th class="grp">선</th><th class="ct">컷</th>'
+    '<th class="grp">선</th><th class="ct">컷</th>'
     '<th class="grp">선</th><th class="ct">컷</th>'
     '<th class="grp">선</th><th class="ct">컷</th>'
     '<th class="grp">선</th><th class="ct">컷</th>'
     '</tr></thead>'
 )
+EMPTY = (
+    '<td class="sd"></td><td class="yhi"></td>'
+    '<td class="se"></td><td></td>'
+    '<td class="se"></td><td></td>'
+    '<td class="se"></td><td></td>'
+)
 
-def make_spread_for_jk(jk, sect_n, label, rows_jk, show_note):
-    tr_html = []
-    for r in rows_jk:
+def make_entry(r):
+    return (
+        f'<td class="sd">{r["sido"]}</td>'
+        f'<td class="yhi">{r["yhi"]}</td>'
+        f'<td class="se">{r["se25"]}</td><td><b class="ct">{r["ct25"]}</b></td>'
+        f'<td class="se">{r["se24"]}</td><td><b class="ct">{r["ct24"]}</b></td>'
+        f'<td class="se">{r["se23"]}</td><td><b class="ct">{r["ct23"]}</b></td>'
+    )
+
+# 아이템 목록 생성 (소타이틀 포함)
+items = []
+for jk in JK_LIST:
+    jk_rows = get_jk_rows(jk)
+    print(f'{jk}: {len(jk_rows)}개 시도')
+    if not jk_rows: continue
+    items.append({'type': 'header', 'label': jk})
+    for r in jk_rows:
+        items.append({'type': 'row', 'data': r})
+
+# 2단 배치 — 소타이틀은 colspan 17
+tr_html = []
+i = 0
+while i < len(items):
+    item = items[i]
+    if item['type'] == 'header':
         tr_html.append(
-            f'<tr><td class="sd">{r["sido"]}</td>'
-            f'<td class="yhi">{r["yhi"]}</td>'
-            f'<td class="se">{r["se25"]}</td><td><b class="ct">{r["ct25"]}</b></td>'
-            f'<td class="se">{r["se24"]}</td><td><b class="ct">{r["ct24"]}</b></td>'
-            f'<td class="se">{r["se23"]}</td><td><b class="ct">{r["ct23"]}</b></td>'
-            f'</tr>'
+            f'<tr><td colspan="17" style="'
+            f'font-size:6pt;font-weight:700;padding:1.5mm 1mm 0.5mm;'
+            f'background:#eaf0fb;color:#1a3a6b;border-bottom:0.5pt solid #7da3d6">'
+            f'{item["label"]}</td></tr>'
         )
-    note = (
-        '<p style="margin-bottom:1.5mm;font-size:var(--fs-sm);">'
-        '<b>선</b>=선발(명)·<b class="ct">컷</b>=합격선(과목평균 100점)·'
-        '\'26은 선발만··=미선발</p>'
-        if show_note else ''
-    )
-    tbl = (
-        f'<table class="extab fix mtx" style="font-size:7pt;width:70mm">'
-        f'\n{COLGROUP}\n{HEADER}\n'
-        f'<tbody>\n' + '\n'.join(tr_html) + '\n</tbody>\n</table>'
-    )
-    blk = (
-        f'<div class="blk fill"><div class="mh">'
-        f'<span class="n mono">{sect_n}</span>'
-        f'<h3 class="serif">시·도별 합격선 색인 — {label}</h3>'
-        f'<span class="flag real fb">실데이터</span></div>'
-        f'<div class="bd">{note}{tbl}</div></div>'
-    )
-    folio = '<div class="folio"><span class="src">해커스공무원 필기 합격선 배치표</span><span class="pg serif">0</span></div>'
-    rhead = '<div class="rhead"><span class="r">PART 4 · 지방 교육행정</span><span>시·도별 합격선 색인</span></div>'
-    page = f'<div class="page">\n    {rhead}\n{blk}\n    {folio}\n  </div>'
-    return f'\n  <div class="spread">{page}\n  </div>\n'
+        i += 1
+    else:
+        left = make_entry(item['data']); i += 1
+        if i < len(items) and items[i]['type'] == 'row':
+            right = make_entry(items[i]['data']); i += 1
+        else:
+            right = EMPTY
+        tr_html.append(f'<tr>{left}<td class="spc"></td>{right}</tr>')
 
-# 기존 4-3~4-6 spread 제거 후 새 spread 삽입
+total_data = sum(1 for it in items if it['type']=='row')
+print(f'총 데이터 행: {total_data}, TR 수: {len(tr_html)}')
+
+# spread HTML 생성
+note = (
+    '<p style="margin-bottom:1mm;font-size:var(--fs-sm);">'
+    '<b>선</b>=선발(명)·<b class="ct">컷</b>=합격선(과목평균 100점)·'
+    '\'26은 선발만·빈칸(·)=미모집</p>'
+)
+tbl = (
+    f'<table class="extab fix mtx idx sgun" style="font-size:6pt;">'
+    f'\n{COLGROUP}\n{HEADER}\n'
+    f'<tbody>\n' + '\n'.join(tr_html) + '\n</tbody>\n</table>'
+)
+blk = (
+    '<div class="blk fill"><div class="mh">'
+    '<span class="n mono">4-3</span>'
+    '<h3 class="serif">시·도별 합격선 색인</h3>'
+    '<span class="flag real fb">실데이터</span></div>'
+    f'<div class="bd">{note}{tbl}</div></div>'
+)
+folio = '<div class="folio"><span class="src">해커스공무원 필기 합격선 배치표</span><span class="pg serif">0</span></div>'
+rhead = '<div class="rhead"><span class="r">PART 4 · 지방 교육행정</span><span>시·도별 합격선 색인</span></div>'
+page = f'<div class="page">\n    {rhead}\n{blk}\n    {folio}\n  </div>'
+spread_html = f'\n  <div class="spread">{page}\n  </div>\n'
+
+# 05_교행.html 업데이트
 with open('포켓북_05_교행.html', encoding='utf-8') as f:
     gyohtml = f.read()
 seg = gyohtml.split('<!-- SPREADS:START -->')[1].split('<!-- SPREADS:END -->')[0]
-
 oc = re.compile(r'<div\b[^>]*>|</div\s*>')
 
 def find_spread_bounds(seg, sect_ids):
@@ -148,46 +195,33 @@ def find_spread_bounds(seg, sect_ids):
 
 # 4-2 끝 위치
 idx42 = seg.find('class="n mono">4-2</span>')
-sp42_start = seg.rfind('<div class="spread">', 0, idx42)
+sp42s = seg.rfind('<div class="spread">', 0, idx42)
 depth = 0; end42 = None
-for t in oc.finditer(seg, sp42_start):
+for t in oc.finditer(seg, sp42s):
     if t.group().startswith('</div'): depth -= 1
     else: depth += 1
     if depth == 0: end42 = t.end(); break
 
-# 제거 대상 spread들 (4-3/4-4/4-5/4-6)
+# 기존 4-3~4-6 제거
 remove = find_spread_bounds(seg, ['4-3','4-4','4-5','4-6'])
-print(f"제거 대상 spread: {len(remove)}개")
-
-# 새 spread 생성
-new_spreads = []
-for i, (jk, sect_n, label) in enumerate(JK_CONFIG):
-    rows_jk = get_jk_rows(jk)
-    print(f'{jk} ({sect_n}): {len(rows_jk)}개 시도')
-    if rows_jk:
-        new_spreads.append(make_spread_for_jk(jk, sect_n, label, rows_jk, show_note=(i==0)))
-
-# 재조합: seg에서 제거 범위를 뺀 뒤 4-2 다음에 new_spreads 삽입
-# 역순으로 제거 (인덱스 유지)
+print(f"제거 대상: {len(remove)}개")
 seg_list = list(seg)
 for s, e in sorted(remove, reverse=True):
     del seg_list[s:e]
 seg_cleaned = ''.join(seg_list)
 
-# end42가 remove로 인해 앞당겨질 수 있으므로 재계산
+# 4-2 끝 재계산
 idx42c = seg_cleaned.find('class="n mono">4-2</span>')
-sp42s = seg_cleaned.rfind('<div class="spread">', 0, idx42c)
+sp42sc = seg_cleaned.rfind('<div class="spread">', 0, idx42c)
 depth = 0; end42c = None
-for t in oc.finditer(seg_cleaned, sp42s):
+for t in oc.finditer(seg_cleaned, sp42sc):
     if t.group().startswith('</div'): depth -= 1
     else: depth += 1
     if depth == 0: end42c = t.end(); break
 
-new_seg = seg_cleaned[:end42c] + ''.join(new_spreads) + seg_cleaned[end42c:]
-
-# 확인
+new_seg = seg_cleaned[:end42c] + spread_html + seg_cleaned[end42c:]
 sects = re.findall(r'<span class="n mono">([^<]+)</span>', new_seg)
-print(f"수정 후 spread 목록: {sects}")
+print(f"spread 목록: {sects}")
 
 new_html = (
     gyohtml.split('<!-- SPREADS:START -->')[0]
@@ -198,4 +232,4 @@ new_html = (
 )
 with open('포켓북_05_교행.html', 'w', encoding='utf-8') as f:
     f.write(new_html)
-print('저장 완료 — 포켓북_05_교행.html')
+print('저장 완료')
