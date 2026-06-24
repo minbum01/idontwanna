@@ -236,31 +236,8 @@ for sido in SIDOS:
 
 print(f'지방9·8급 spread: {len(spreads_html)}개')
 
-# ── 6. 교행·지방7급 spread 유지 ──
-def extract_spreads_by_sect(html_seg, sect_id):
-    results = []
-    pos = 0
-    oc = re.compile(r'<div\b[^>]*>|</div\s*>')
-    while True:
-        idx = html_seg.find(f'<span class="n mono">{sect_id}</span>', pos)
-        if idx < 0: break
-        sp_start = html_seg.rfind('<div class="spread">', 0, idx)
-        depth = 0; end = None
-        for t in oc.finditer(html_seg, sp_start):
-            if t.group().startswith('</div'): depth -= 1
-            else: depth += 1
-            if depth == 0: end = t.end(); break
-        if end is None: break
-        results.append('\n  ' + html_seg[sp_start:end] + '\n')
-        pos = end
-    return results
-
-gyohaeng_spreads = extract_spreads_by_sect(seg, '4-6')
-jibang7_spreads  = extract_spreads_by_sect(seg, '5-6')
-print(f'교행: {len(gyohaeng_spreads)}, 지방7급: {len(jibang7_spreads)}')
-
-# ── 7. 저장 ──
-all_spreads = spreads_html + gyohaeng_spreads + jibang7_spreads
+# ── 6. 저장 ──
+all_spreads = spreads_html
 new_h = (
     h.split('<!-- SPREADS:START -->')[0]
     + '<!-- SPREADS:START -->'
