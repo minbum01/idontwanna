@@ -32,7 +32,7 @@ def fv_cut(v):
     try:
         f = float(str(v).replace(',', ''))
         if f > 100: f = f / 5
-        return f'{f:.1f}'
+        return f'{f:.1f}'.rstrip('0').rstrip('.')
     except: return '·'
 
 data = defaultdict(dict)

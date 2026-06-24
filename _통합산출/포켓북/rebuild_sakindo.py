@@ -77,7 +77,7 @@ def fv(v, is_cut=False):
         f = float(str(v).replace(',',''))
         if is_cut:
             if f > 100: f = f / 5
-            return f'{f:.1f}'
+            return f'{f:.1f}'.rstrip('0').rstrip('.')
         return str(int(round(f)))
     except:
         return '·'
