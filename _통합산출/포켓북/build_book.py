@@ -86,7 +86,7 @@ for f in PARTS:
             pages.append(pg)
 
 # ── folio(쪽번호) 자동 재부여: 표지 안쪽 제외, 6쪽부터 시작 ──
-PAGE_START = 6
+PAGE_START = 0
 for idx in range(len(pages)):
     n = idx + PAGE_START
     pages[idx] = re.sub(r'(<span class="pg serif">)[^<]*(</span>)',
