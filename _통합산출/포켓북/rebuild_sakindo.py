@@ -79,9 +79,15 @@ def fv(v, is_cut=False):
     except:
         return '·'
 
+def normalize_r5(sido, r5):
+    r5 = r5.strip()
+    if not r5 or r5 in BONCHEONG.get(sido, set()):
+        return ''  # 본청 aliases(빈값·도명 등) 모두 '' 로 통일
+    return r5
+
 data = defaultdict(lambda: defaultdict(lambda: (None, None)))
 for r in rows:
-    key = (r[0], r[5].strip(), r[8].strip())
+    key = (r[0], normalize_r5(r[0], r[5]), r[8].strip())
     yr = r[2]
     if data[key][yr] == (None, None):
         data[key][yr] = (r[11], r[18])
