@@ -144,13 +144,79 @@ if missing:
 OUT_SA = '포켓북_전체_standalone.html'
 css_txt = open('pocketbook.css', encoding='utf-8').read()
 js_txt  = open('pocketbook.js',  encoding='utf-8').read()
-# @import 외부 폰트 URL은 그대로 유지 (CDN에서 로드), 나머지 CSS 인라인
+
+# ── 인쇄용: 각 .page를 cropwrap으로 감싸 재단선 영역(177.65×234.65mm) 추가 ──
+# BleedBox(159×216) 주위 각 9.33mm에 재단선(L자 crop marks) 배치
+CROP_MARKS = (
+    '<span class="cm tl"></span>'
+    '<span class="cm tr"></span>'
+    '<span class="cm bl"></span>'
+    '<span class="cm br"></span>'
+)
+CROPWRAP_CSS = '''
+/* ── 재단선(Crop Marks) — 인쇄 입고용 ── */
+.cropwrap{width:177.65mm;height:234.65mm;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.cm{position:absolute;width:7mm;height:7mm;pointer-events:none;}
+.cm::before,.cm::after{content:'';position:absolute;background:#000;}
+.cm::before{width:5mm;height:.25pt;}
+.cm::after{width:.25pt;height:5mm;}
+.cm.tl{top:3.33mm;left:3.33mm;}
+.cm.tl::before{top:0;left:0;}
+.cm.tl::after{top:0;left:0;}
+.cm.tr{top:3.33mm;right:3.33mm;}
+.cm.tr::before{top:0;right:0;}
+.cm.tr::after{top:0;right:0;}
+.cm.bl{bottom:3.33mm;left:3.33mm;}
+.cm.bl::before{bottom:0;left:0;}
+.cm.bl::after{bottom:0;left:0;}
+.cm.br{bottom:3.33mm;right:3.33mm;}
+.cm.br::before{bottom:0;right:0;}
+.cm.br::after{bottom:0;right:0;}
+@media screen{.cropwrap{display:contents;}.cm{display:none;}}
+@media print{
+  @page{size:177.65mm 234.65mm;margin:0;}
+  .cropwrap{page-break-after:always;break-after:page;}
+  .cropwrap:last-child{page-break-after:auto;break-after:auto;}
+  .page{page-break-after:auto !important;break-after:auto !important;}
+}
+'''
+
+def wrap_pages_for_print(html):
+    """각 .page div를 .cropwrap으로 감싸기 (ifc/pad 제외)"""
+    import re as _re
+    result = []
+    pos = 0
+    open_close = _re.compile(r'<div\b[^>]*>|</div\s*>')
+    page_head = _re.compile(r'<div\b[^>]*\bclass="[^"]*\bpage\b[^"]*"[^>]*>')
+    ifc_pad = _re.compile(r'\b(ifc|pad)\b')
+    while True:
+        m = page_head.search(html, pos)
+        if not m:
+            result.append(html[pos:])
+            break
+        result.append(html[pos:m.start()])
+        # ifc/pad는 cropwrap 없이 skip
+        if ifc_pad.search(m.group()):
+            result.append(m.group())
+            pos = m.end()
+            continue
+        # depth로 </div> 찾기
+        depth = 0; end = None
+        for t in open_close.finditer(html, m.start()):
+            depth += (-1 if t.group().startswith('</div') else 1)
+            if depth == 0: end = t.end(); break
+        page_html = html[m.start():end]
+        result.append(f'<div class="cropwrap">{CROP_MARKS}{page_html}</div>')
+        pos = end
+    return ''.join(result)
+
 DOC_SA = DOC.replace(
     '<link rel="stylesheet" href="pocketbook.css">',
-    f'<style>\n{css_txt}\n</style>'
+    f'<style>\n{css_txt}\n{CROPWRAP_CSS}\n</style>'
 ).replace(
     '<script src="pocketbook.js"></script>',
     f'<script>\n{js_txt}\n</script>'
 )
+DOC_SA = wrap_pages_for_print(DOC_SA)
 open(OUT_SA, 'w', encoding='utf-8').write(DOC_SA)
-print(f'생성: {OUT_SA}  ← 패드·오프라인용 독립 파일')
+print(f'생성: {OUT_SA}  ← 패드·오프라인용 독립 파일 (재단선 포함)')
