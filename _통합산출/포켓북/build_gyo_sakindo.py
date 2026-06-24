@@ -165,7 +165,7 @@ blk = (
     f'<div class="bd">{note}{tbl}</div></div>'
 )
 folio = '<div class="folio"><span class="src">해커스공무원 필기 합격선 배치표</span><span class="pg serif">0</span></div>'
-rhead = '<div class="rhead"><span class="r">PART 4 · 지방 교육행정</span><span>시·도별 합격선 색인</span></div>'
+rhead = '<div class="rhead"><span class="r">PART 4 · 지방 교육행정</span><span>합격선 색인</span></div>'
 page = f'<div class="page">\n    {rhead}\n{blk}\n    {folio}\n  </div>'
 spread_html = f'\n  <div class="spread">{page}\n  </div>\n'
 
