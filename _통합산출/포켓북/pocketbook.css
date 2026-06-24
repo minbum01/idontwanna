@@ -58,12 +58,12 @@
   --screen-bg:#2a3246;  /* 화면 배경(블루톤) */
 
   /* ── 판형·제본 (무선제본 · A5 · ~150쪽 기준) ── */
-  --trim-w : 148mm;    /* 재단 후 A5 너비 */
+  --trim-w : 153mm;    /* 재단 후 너비 */
   --trim-h : 210mm;    /* 재단 후 A5 높이 */
   --bleed  : 3mm;      /* 도련(재단 여유) — 사방 3mm */
-  --pg-w   : 154mm;    /* 작업 너비 = trim + 도련×2 (148+6) */
+  --pg-w   : 159mm;    /* 작업 너비 = trim + 도련×2 (153+6) */
   --pg-h   : 216mm;    /* 작업 높이 = 210+6 */
-  --spread-w: 308mm;   /* 펼침면(=작업 너비×2) */
+  --spread-w: 318mm;   /* 펼침면(=작업 너비×2) */
   /* 본문 여백(재단선 기준) — 안쪽(제본)>바깥 */
   --m-top  : 12mm;     /* 위 */
   --m-bot  : 10mm;     /* 아래 */
@@ -739,8 +739,8 @@ body.show-fb .bd :is(p,li,td,th,dt,dd,b,strong,em,u,span,h3,h2,h4):hover{outline
   .fb{display:none !important;}
 }
 
-/* ===== PRINT: A5 single pages (154x216mm incl. 3mm bleed) ===== */
-@page{size:154mm 216mm;margin:0;}
+/* ===== PRINT: single pages (159x216mm incl. 3mm bleed) ===== */
+@page{size:159mm 216mm;margin:0;}
 @media print{
   body{background:#fff;}
   .toolbar{display:none !important;}
